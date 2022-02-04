@@ -7,8 +7,8 @@ set -e
 
 # Platforms with a toolchain available in the latest Docker image and
 # built by the -a option.
-DEFAULT_PLATFORMS=(  byt cht bdw hsw tgl tgl-h apl skl kbl cnl sue icl jsl \
-                    imx8 imx8x imx8m imx8ulp rn mt8186 mt8195 )
+DEFAULT_PLATFORMS=(  byt cht bdw hsw apl skl kbl cnl sue icl jsl \
+                    imx8 imx8x imx8m imx8ulp tgl tgl-h mtl rn mt8186 mt8195 )
 
 # Work in progress can be added to this "staging area" without breaking
 # the -a option for everyone.
@@ -279,6 +279,15 @@ do
 			HOST="xtensa-cnl-elf"
 			XTENSA_TOOLS_VERSION="RG-2017.8-linux"
 			HAVE_ROM='yes'
+			;;
+		mtl)
+			PLATFORM="mtl"
+			XTENSA_CORE="ace10_LX7HiFi4_RI_2020_5"
+			HOST="xtensa-cnl-elf"
+			XTENSA_TOOLS_VERSION="RI-2020.5-linux"
+			HAVE_ROM='yes'
+			# default key for MTL
+			PLATFORM_PRIVATE_KEY="-D${SIGNING_TOOL}_PRIVATE_KEY=$SOF_TOP/keys/otc_private_key_3k.pem"
 			;;
 		tgl)
 			PLATFORM="tgplp"
