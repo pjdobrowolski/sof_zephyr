@@ -480,7 +480,7 @@ if (CONFIG_SOC_SERIES_INTEL_ACE1X)
 	)
 
 	zephyr_library_sources_ifdef(CONFIG_INTEL_DMIC
-		${SOF_DRIVERS_PATH}/intel/dmic/dmic.c
+		${SOF_DRIVERS_PATH}/intel/dmic/ace_dmic.c
 	)
 
 	zephyr_library_sources_ifdef(CONFIG_INTEL_DMIC_TPLG_PARAMS
