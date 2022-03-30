@@ -24,8 +24,9 @@ VERSION = version.Version("2.0.0")
 
 # Constant value resolves SOF_TOP directory as: "this script directory/.."
 SOF_TOP = pathlib.Path(__file__).parents[1].resolve()
-west_top = pathlib.Path(SOF_TOP, "..").resolve()
-default_rimage_key = pathlib.Path(SOF_TOP, "keys", "otc_private_key.pem")
+# Default value may be overriten by -p arg
+west_top = pathlib.Path(SOF_TOP, "..")
+default_rimage_key = pathlib.Path("modules", "audio", "sof", "keys", "otc_private_key.pem")
 
 sof_version = None
 
@@ -190,13 +191,34 @@ Noted that with fw_naming set as 'AVS', there will be output subdirectories for 
 						help="Path to a non-default rimage signing key.")
 	parser.add_argument("-o", "--overlay", type=pathlib.Path, required=False, action='append',
 						default=[], help="Paths to overlays")
-	parser.add_argument("-p", "--pristine", required=False, action="store_true",
-						help="Perform pristine build removing build directory.")
-	parser.add_argument("-u", "--update", required=False, action="store_true",
-		help="""Runs west update command - clones SOF dependencies. Downloads next to this sof clone a new Zephyr
-project with its required dependencies. Creates a modules/audio/sof symbolic link pointing
-back at this sof clone.  All projects are checkout out to
-revision defined in manifests of SOF and Zephyr.""")
+	parser.add_argument("-z", "--zephyr-ref", required=False,
+						help="Initial Zephyr git ref for the -c option."
+						" Can be a branch, tag, full SHA1 in a fork")
+	parser.add_argument("-u", "--url", required=False,
+						default="https://github.com/intel-innersource/os.rtos.zephyr.zephyr-intel",
+						help="URL to clone Zephyr from")
+	mode_group = parser.add_mutually_exclusive_group()
+	mode_group.add_argument("-p", "--west_path", required=False, type=pathlib.Path,
+				help="""Points to existing Zephyr project directory. Incompatible with -c.
+Uses by default path used by -c mode: SOF_TOP/zephyrproject.
+If zephyr-project/modules/audio/sof is missing then a
+symbolic link pointing to SOF_TOP directory will automatically be
+created and west will recognize it as its new sof module.
+If zephyr-project/modules/audio/sof already exists and is a
+different copy than where this script is run from, then the
+behavior is undefined.
+This -p option is always required_if the real (not symbolic)
+sof/ and zephyr-project/ directories are not nested in one
+another.""",
+	)
+	mode_group.add_argument("-c", "--clone_mode", required=False, action="store_true",
+				help="""Using west, downloads inside this sof clone a new Zephyr
+project with the required git repos. Creates a
+sof/zephyrproject/modules/audio/sof symbolic link pointing
+back at this sof clone.
+Incompatible with -p. To stop after downloading Zephyr, do not
+pass any platform or cmake argument.""",
+	)
 	parser.add_argument('-v', '--verbose', default=0, action='count',
 			    help="""Verbosity level. Repetition of the flag increases verbosity.
 The same number of '-v' is passed to "west".
@@ -352,24 +374,6 @@ def west_init_if_needed():
 		print(f"West workspace: {west_root_dir}")
 		print(f"West manifest path: {west_manifest_path}")
 
-def create_zephyr_directory():
-	global west_top
-	# Do not fail when there's only an empty directory left over
-	# (because of some early interruption of this script or proxy
-	# misconfiguration, etc.)
-	try:
-		# rmdir() is safe: it deletes empty directories ONLY.
-		west_top.rmdir()
-	except OSError as oserr:
-		if oserr.errno not in [errno.ENOTEMPTY, errno.ENOENT]:
-			raise oserr
-		# else when not empty then let the next line fail with a
-		# _better_ error message:
-		#         "zephyrproject already exists"
-
-	west_top.mkdir(mode=511, parents=False, exist_ok=False)
-	west_top = west_top.resolve(strict=True)
-
 def create_zephyr_sof_symlink():
 	global west_top, SOF_TOP
 	if not west_top.exists():
@@ -389,11 +393,13 @@ def create_zephyr_sof_symlink():
 			"security-policy-settings/create-symbolic-links")
 		raise
 
-def west_update():
-	"""[summary] Clones all west manifest projects to specified revisions"""
-	global west_top
+def west_init_update():
+	"""[summary] Downloads zephyrproject and zephyr-intel inside sof/ and create a ../../.. symbolic
+	link back to sof/"""
+	global west_top, SOF_TOP
+	execute_command(["west", "init", "-l", str(SOF_TOP)], check=True)
+	create_zephyr_sof_symlink()
 	execute_command(["west", "update"], check=True, timeout=3000, cwd=west_top)
-
 
 def get_sof_version(abs_build_dir):
 	"""[summary] Get version string major.minor.micro of SOF firmware
@@ -595,6 +601,23 @@ def build_platforms():
 			  "zephyr" / "soc" / "xtensa" / "intel_adsp" / "tools",
 			tools_output_dir,
 			symlinks=True, ignore_dangling_symlinks=True, dirs_exist_ok=True)
+
+def run_clone_mode():
+	if find_west_workspace():
+		raise RuntimeError("Zephyr found already! Not downloading it again")
+	west_init_update()
+
+def run_point_mode():
+	global west_top, SOF_TOP
+	west_workspace_path = find_west_workspace()
+	if not west_workspace_path:
+		raise RuntimeError("Failed to find west workspace.\nScanned directories:\n{}\n{}\n{}"
+			.format(os.getcwd(), SOF_TOP, west_top))
+	if not west_workspace_path.exists():
+		raise FileNotFoundError("West topdir returned {} as workspace but it"
+			" does not exist".format(west_workspace_path))
+	west_top = west_workspace_path
+	create_zephyr_sof_symlink()
 
 def main():
 	parse_args()
