@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SOF west manifest
 manifest:
   version: "0.13"
@@ -44,3 +45,65 @@ manifest:
     # Changes to submanifests/*.yml files _are_ effective; these have no
     # specified 'revision:'
     import: submanifests
+=======
+# SOF specific manifest
+
+manifest:
+  defaults:
+    remote: zephyr-upstream
+
+  remotes:
+    - name: intel
+      url-base: https://github.com/intel-innersource
+    - name: zephyr-upstream
+      url-base: https://github.com/zephyrproject-rtos
+    - name: sof
+      url-base: https://github.com/thesofproject
+
+
+  #
+  # Please add items below based on alphabetical order
+  projects:
+    - name: zephyr-intel
+      repo-path: os.rtos.zephyr.zephyr-intel
+      path: zephyr-intel
+      revision: 7d2213ad2c08309da39a7a56817dbd6bc813aed0
+      remote: intel
+      import:
+        name-whitelist:
+          - zephyr
+          - ci-tools
+          - cmsis
+          - civetweb
+          - fatfs
+          - hal_st
+          - hal_xtensa
+          - littlefs
+          - mbedtls
+          - mipi-sys-t
+          - net-tools
+          - segger
+          - tinycbor
+          - tinycrypt
+          - nanopb
+          - tflite-micro
+          - lz4
+          - hal-intel
+
+    - name: rimage
+      repo-path: drivers.audio.firmware.rimage
+      path: drivers.audio.firmware.converged/rimage
+      revision: 8ba3d17296563af5166f2f59448e9c21e11194bf
+      remote: intel
+      # import: true
+
+    - name: tomlc99
+      repo-path: tomlc99
+      path: drivers.audio.firmware.converged/rimage/tomlc99
+      revision: e3a03f5ec7d8d33be705c5ce8a632d998ce9b4d1
+      remote: sof
+
+  self:
+    path: drivers.audio.firmware.converged
+    west-commands: scripts/west-commands.yml
+>>>>>>> 80e87bec2 ([DO NOT UPSTREAM] Add west.yaml configuring zephyr dependencies from sof)
