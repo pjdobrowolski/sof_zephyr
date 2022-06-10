@@ -67,7 +67,7 @@ manifest:
     - name: zephyr-intel
       repo-path: os.rtos.zephyr.zephyr-intel
       path: zephyr-intel
-      revision: 7d2213ad2c08309da39a7a56817dbd6bc813aed0
+      revision: 8ef0bdf2c420edbb56a0b5ae8db5794a741aa010
       remote: intel
       import:
         name-whitelist:
