@@ -93,7 +93,7 @@ manifest:
     - name: rimage
       repo-path: drivers.audio.firmware.rimage
       path: drivers.audio.firmware.converged/rimage
-      revision: 8ba3d17296563af5166f2f59448e9c21e11194bf
+      revision: 452847ddc04ebf865e3e03926cc3298db4b66a81
       remote: intel
       # import: true
 
