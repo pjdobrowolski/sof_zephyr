@@ -67,7 +67,7 @@ manifest:
     - name: zephyr-intel
       repo-path: os.rtos.zephyr.zephyr-intel
       path: zephyr-intel
-      revision: 8ef0bdf2c420edbb56a0b5ae8db5794a741aa010
+      revision: b90db589117dddaac1570f9302843c383c084f47
       remote: intel
       import:
         name-whitelist:
@@ -93,7 +93,7 @@ manifest:
     - name: rimage
       repo-path: drivers.audio.firmware.rimage
       path: drivers.audio.firmware.converged/rimage
-      revision: 452847ddc04ebf865e3e03926cc3298db4b66a81
+      revision: 5504179137c56948abaa77ec5c137dc8cf3c336f
       remote: intel
       # import: true
 
