@@ -67,28 +67,19 @@ manifest:
     - name: zephyr-intel
       repo-path: os.rtos.zephyr.zephyr-intel
       path: zephyr-intel
-      revision: b90db589117dddaac1570f9302843c383c084f47
+      revision: 70915f4076ded71dea3e881718d4016aaabf034f
       remote: intel
       import:
         name-whitelist:
           - zephyr
-          - ci-tools
-          - cmsis
-          - civetweb
           - fatfs
-          - hal_st
           - hal_xtensa
           - littlefs
           - mbedtls
           - mipi-sys-t
-          - net-tools
-          - segger
           - tinycbor
           - tinycrypt
-          - nanopb
-          - tflite-micro
           - lz4
-          - hal-intel
 
     - name: rimage
       repo-path: drivers.audio.firmware.rimage
