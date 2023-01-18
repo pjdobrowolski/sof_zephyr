@@ -366,7 +366,8 @@ cleanup:
 	return ret;
 }
 
-static void lib_manager_dma_buffer_update(struct lib_manager_dma_buf *buffer, uintptr_t addr,
+__attribute__((optimize("-O0")))
+static void lib_manager_dma_buffer_update(struct lib_manager_dma_buf *buffer,
 					  uint32_t size)
 {
 	buffer->size = size;
@@ -462,6 +463,7 @@ static int lib_manager_dma_deinit(struct lib_manager_dma_ext *dma_ext, uint32_t 
 	return 0;
 }
 
+__attribute__((optimize("-O0")))
 static int lib_manager_load_data_from_host(struct lib_manager_dma_ext *dma_ext, uint32_t size)
 {
 	struct dma_config config;
@@ -522,6 +524,7 @@ return_on_fail:
 	return ret;
 }
 
+__attribute__((optimize("-O0")))
 static int lib_manager_store_data(struct lib_manager_dma_ext *dma_ext, void *dst_addr,
 				  uint32_t dst_size)
 {
