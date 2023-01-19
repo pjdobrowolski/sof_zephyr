@@ -506,7 +506,7 @@ static int lib_manager_load_data_from_host(struct lib_manager_dma_ext *dma_ext, 
 		goto return_on_fail;
 
 	/* Wait till whole data acquired */
-	while (avail_bytes < size) {
+	do{
 		/* get data sizes from DMA */
 		ret = dma_get_status(dma_ext->chan->dma->z_dev, dma_ext->chan->index, &stat);
 
@@ -516,7 +516,7 @@ static int lib_manager_load_data_from_host(struct lib_manager_dma_ext *dma_ext, 
 		avail_bytes = stat.pending_length;
 
 		k_usleep(100);
-	}
+	}while(avail_bytes);
 	ret = dma_stop(dma_ext->chan->dma->z_dev, dma_ext->chan->index);
 
 	if (ret < 0)
