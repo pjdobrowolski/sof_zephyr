@@ -146,6 +146,7 @@ static bool is_l3_heap_pointer(void *ptr)
 }
 #endif
 
+__attribute__((optimize("-O0")))
 static void *heap_alloc_aligned(struct k_heap *h, size_t min_align, size_t bytes)
 {
 	k_spinlock_key_t key;
@@ -167,6 +168,7 @@ static void *heap_alloc_aligned(struct k_heap *h, size_t min_align, size_t bytes
 	return ret;
 }
 
+__attribute__((optimize("-O0")))
 static void __sparse_cache *heap_alloc_aligned_cached(struct k_heap *h,
 						      size_t min_align, size_t bytes)
 {
@@ -232,6 +234,7 @@ static inline bool zone_is_cached(enum mem_zone zone)
 	return false;
 }
 
+__attribute__((optimize("-O0")))
 void *rmalloc(enum mem_zone zone, uint32_t flags, uint32_t caps, size_t bytes)
 {
 	void *ptr;

@@ -554,6 +554,7 @@ static int lib_manager_store_data(struct lib_manager_dma_ext *dma_ext, void *dst
 	return 0;
 }
 
+__attribute__((optimize("-O0")))
 static int lib_manager_allocate_store_mem(uint32_t *address, uint32_t size, uint32_t attribs)
 {
 	void *local_add;
@@ -570,14 +571,15 @@ static int lib_manager_allocate_store_mem(uint32_t *address, uint32_t size, uint
 	local_add = rballoc_align(0, caps, size, addr_align);
 #endif
 	if (!local_add) {
-		tr_err(&lib_manager_tr, "dma_buffer_init(): alloc failed");
-		return -ENOMEM;
+//		tr_err(&lib_manager_tr, "dma_buffer_init(): alloc failed");
+		return NULL;
 	}
 
 	*address = (uint32_t)local_add;
 	return 0;
 }
 
+__attribute__((optimize("-O0")))
 static int lib_manager_store_library(struct lib_manager_dma_ext *dma_ext, void *man_buffer,
 				     uint32_t lib_id, uint32_t addr_align)
 {
@@ -590,7 +592,7 @@ static int lib_manager_store_library(struct lib_manager_dma_ext *dma_ext, void *
 	/* Prepare storage memory */
 	ret = lib_manager_allocate_store_mem((void *)&library_base_address, preload_size, 0);
 
-	tr_err(&lib_manager_tr, "mm_map() :%d, pointer: 0x%x", ret, library_base_address);
+//	tr_err(&lib_manager_tr, "mm_map() :%d, pointer: 0x%x", ret, library_base_address);
 	if (ret < 0)
 		return ret;
 
