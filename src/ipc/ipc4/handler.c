@@ -443,6 +443,7 @@ static int ipc4_set_pipeline_state(struct ipc4_message_request *ipc4)
 }
 
 #if CONFIG_LIBRARY_MANAGER
+__attribute__((optimize("-O0")))
 static int ipc4_load_library(struct ipc4_message_request *ipc4)
 {
 	struct ipc4_module_load_library library;
@@ -452,7 +453,7 @@ static int ipc4_load_library(struct ipc4_message_request *ipc4)
 	library.data.dat = ipc4->extension.dat;
 
 	ret = lib_manager_load_library(library.header.r.dma_id, library.header.r.lib_id);
-	tr_info(&ipc_tr, "ipc: ipc4_load_library %d", ret);
+//	tr_info(&ipc_tr, "ipc: ipc4_load_library %d", ret);
 
 	return ret;
 }
@@ -505,6 +506,7 @@ static int ipc4_process_chain_dma(struct ipc4_message_request *ipc4)
 	return ret;
 }
 
+__attribute__((optimize("-O0")))
 static int ipc4_process_glb_message(struct ipc4_message_request *ipc4)
 {
 	uint32_t type;
@@ -1062,6 +1064,7 @@ void ipc_msg_reply(struct sof_ipc_reply *reply)
 	ipc_compound_msg_done(in.primary.r.type, reply->error);
 }
 
+__attribute__((optimize("-O0")))
 void ipc_cmd(struct ipc_cmd_hdr *_hdr)
 {
 	/* ignoring _hdr as it does not contain valid data in IPC4/IDC case */

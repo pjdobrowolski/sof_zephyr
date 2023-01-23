@@ -367,7 +367,7 @@ cleanup:
 }
 
 __attribute__((optimize("-O0")))
-static void lib_manager_dma_buffer_update(struct lib_manager_dma_buf *buffer,
+static void lib_manager_dma_buffer_update(struct lib_manager_dma_buf *buffer, uintptr_t addr,
 					  uint32_t size)
 {
 	buffer->size = size;
@@ -500,6 +500,7 @@ static int lib_manager_load_data_from_host(struct lib_manager_dma_ext *dma_ext, 
 	/* Wait till whole data acquired */
 	do{
 		/* get data sizes from DMA */
+		k_usleep(100);
 		ret = dma_get_status(dma_ext->chan->dma->z_dev, dma_ext->chan->index, &stat);
 
 		if (ret < 0)
@@ -507,7 +508,6 @@ static int lib_manager_load_data_from_host(struct lib_manager_dma_ext *dma_ext, 
 
 		avail_bytes = stat.pending_length;
 
-		k_usleep(100);
 	}while(avail_bytes);
 	ret = dma_stop(dma_ext->chan->dma->z_dev, dma_ext->chan->index);
 
@@ -616,6 +616,7 @@ static int lib_manager_store_library(struct lib_manager_dma_ext *dma_ext, void *
 	return 0;
 }
 
+__attribute__((optimize("-O0")))
 int lib_manager_load_library(uint32_t dma_id, uint32_t lib_id)
 {
 	struct lib_manager_dma_ext dma_ext;
