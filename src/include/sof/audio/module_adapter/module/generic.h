@@ -207,6 +207,11 @@ struct processing_module {
 	 */
 	bool skip_src_buffer_invalidate;
 
+	/*
+	 * flag to insure that module is loadable
+	 */
+	bool is_loadable;
+
 	/* table containing the list of connected sources */
 	struct module_source_info *source_info;
 };
