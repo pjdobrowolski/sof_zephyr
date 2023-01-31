@@ -8,7 +8,9 @@
 #include <sof/audio/module_adapter/module/iadk_modules.h>
 #include <utilities/array.h>
 #include <system_agent.h>
+#include <native_system_agent.h>
 #include <sof/lib_manager.h>
+#include <sof/audio/module_adapter/module/module_interface.h>
 
 /* Intel module adapter is an extension to SOF module adapter component that allows to integrate
  * modules developed under IADK (Intel Audio Development Kit) Framework. IADK modules uses uniform
@@ -44,6 +46,7 @@ DECLARE_SOF_RT_UUID("iadk_modules", intel_uuid, 0xee2585f2, 0xe7d8, 0x43dc,
 		    0x90, 0xab, 0x42, 0x24, 0xe0, 0x0c, 0x3e, 0x84);
 DECLARE_TR_CTX(intel_codec_tr, SOF_UUID(intel_uuid), LOG_LEVEL_INFO);
 
+static uint8_t is_loadable;
 /**
  * \brief iadk_modules_init.
  * \param[in] mod - processing module pointer.
@@ -80,8 +83,26 @@ static int iadk_modules_init(struct processing_module *mod)
 	uint32_t instance_id = IPC4_INST_ID(mod->dev->ipc_config.id);
 	uint32_t log_handle = (uint32_t) mod->dev->drv->tctx;
 	/* Connect loadable module interfaces with module adapter entity. */
-	void *mod_adp = system_agent_start(md->module_entry_point, module_id,
-					   instance_id, 0, log_handle, &mod_cfg);
+	/* Check if native Zephyr lib is loaded */
+	struct sof_man_fw_desc *desc;
+
+	desc = lib_manager_get_library_module_desc(module_id);
+	struct sof_man_module *module_entry =
+		    (struct sof_man_module *)((char *)desc + SOF_MAN_MODULE_OFFSET(0));
+
+	is_loadable = module_entry->type.lib_type;
+	void *mod_adp;
+
+	/* Check if module is sof loadable */
+	if (is_loadable) {
+		mod_adp = native_system_agent_start(md->module_entry_point, module_id, instance_id,
+						    0, log_handle, &mod_cfg,
+						    (void *)&dev->drv->ops, (void *)dev->drv->uid);
+	} else {
+		/* If not start agent for FDK */
+		mod_adp = system_agent_start(md->module_entry_point, module_id,
+					     instance_id, 0, log_handle, &mod_cfg);
+	}
 
 	md->module_adapter = mod_adp;
 
@@ -102,7 +123,14 @@ static int iadk_modules_init(struct processing_module *mod)
 	md->mpd.out_buff_size = src_cfg->obs;
 
 	/* Call module specific init function if exists. */
-	ret = iadk_wrapper_init(mod->priv.module_adapter);
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
+
+		ret = mod_in->init(mod);
+	} else {
+		ret = iadk_wrapper_init(mod->priv.module_adapter);
+	}
 	return ret;
 }
 
@@ -125,7 +153,14 @@ static int iadk_modules_prepare(struct processing_module *mod)
 	comp_info(dev, "iadk_modules_prepare()");
 
 	/* Call module specific prepare function if exists. */
-	ret = iadk_wrapper_prepare(mod->priv.module_adapter);
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
+
+		ret = mod_in->prepare(mod);
+	} else {
+		ret = iadk_wrapper_prepare(mod->priv.module_adapter);
+	}
 	return 0;
 }
 
@@ -171,10 +206,17 @@ static int iadk_modules_process(struct processing_module *mod,
 		i++;
 	}
 	/* Call module specific process function. */
-	ret = iadk_wrapper_process(mod->priv.module_adapter,
-				   input_buffers, num_input_buffers,
-				   output_buffers, num_output_buffers);
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
 
+		ret = mod_in->process(mod, input_buffers, num_input_buffers, output_buffers,
+				      num_output_buffers);
+	} else {
+		ret = iadk_wrapper_process(mod->priv.module_adapter, input_buffers,
+					   num_input_buffers, output_buffers,
+					   num_output_buffers);
+	}
 	return ret;
 }
 
@@ -193,11 +235,19 @@ static int iadk_modules_free(struct processing_module *mod)
 	int ret = 0;
 
 	comp_info(dev, "iadk_modules_free()");
-	ret = iadk_wrapper_free(mod->priv.module_adapter);
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
+
+		ret = mod_in->free(mod);
+	} else {
+		ret = iadk_wrapper_free(mod->priv.module_adapter);
+	}
 	rfree(md->mpd.in_buff);
 	rfree(md->mpd.out_buff);
 
 	/* Free module resources allocated in L2 memory. */
+
 	ret = lib_manager_free_module(dev->drv, config);
 	if (ret < 0)
 		comp_err(dev, "iadk_modules_free(), lib_manager_free_module() failed!");
@@ -226,11 +276,18 @@ static int iadk_modules_set_configuration(struct processing_module *mod, uint32_
 					  size_t fragment_size, uint8_t *response,
 					  size_t response_size)
 {
-	return iadk_wrapper_set_configuration(mod->priv.module_adapter, config_id, pos,
-					      data_offset_size, fragment, fragment_size,
-					      response, response_size);
-}
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
 
+		return mod_in->set_configuration(mod, config_id, pos, data_offset_size, fragment,
+						 fragment_size, response, response_size);
+	} else {
+		return iadk_wrapper_set_configuration(mod->priv.module_adapter, config_id, pos,
+						      data_offset_size, fragment, fragment_size,
+						      response, response_size);
+	}
+}
 /*
  * \brief iadk_modules_get_configuration - Common method to retrieve module configuration
  * \param[in] mod - struct processing_module pointer
@@ -247,9 +304,17 @@ static int iadk_modules_get_configuration(struct processing_module *mod, uint32_
 					  uint32_t *data_offset_size, uint8_t *fragment,
 					  size_t fragment_size)
 {
-	return iadk_wrapper_get_configuration(mod->priv.module_adapter, config_id,
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
+
+		return mod_in->get_configuration(mod, config_id, data_offset_size,
+						 fragment, fragment_size);
+		} else {
+			return iadk_wrapper_get_configuration(mod->priv.module_adapter, config_id,
 					      MODULE_CFG_FRAGMENT_SINGLE, *data_offset_size,
 					      fragment, fragment_size);
+		}
 }
 
 /**
@@ -261,8 +326,13 @@ static int iadk_modules_get_configuration(struct processing_module *mod, uint32_
  */
 static int iadk_modules_set_processing_mode(struct processing_module *mod,
 					    enum module_processing_mode mode)
-{
+{	if (is_loadable) {
+	struct module_interface *mod_in = (struct module_interface *)mod->priv.module_adapter;
+
+	return mod_in->set_processing_mode(mod, mode);
+} else {
 	return iadk_wrapper_set_processing_mode(mod->priv.module_adapter, mode);
+}
 }
 
 /**
@@ -285,7 +355,14 @@ static enum module_processing_mode iadk_modules_get_processing_mode(struct proce
  */
 static int iadk_modules_reset(struct processing_module *mod)
 {
-	return iadk_wrapper_reset(mod->priv.module_adapter);
+	if (is_loadable) {
+		struct module_interface *mod_in =
+					(struct module_interface *)mod->priv.module_adapter;
+
+		return mod_in->reset(mod);
+	} else {
+		return iadk_wrapper_reset(mod->priv.module_adapter);
+	}
 }
 
 /* Processing Module Adapter API*/
