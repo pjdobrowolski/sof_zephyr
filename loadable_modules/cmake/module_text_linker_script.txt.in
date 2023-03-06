@@ -1,0 +1,29 @@
+
+EXTERN(${PACKAGE_ENTRY_POINT})
+
+PHDRS {
+    ${MODULE}_text_phdr PT_LOAD;
+    ${MODULE}_cmi_text_phdr PT_LOAD;
+}
+
+SECTIONS {
+    .${MODULE}.text : ALIGN(4096) {
+        _${MODULE}_text_start = ABSOLUTE(.);
+        *(.${MODULE}.buildinfo)
+        *(.${MODULE}.gnu.linkonce.literal.*)
+        *(.${MODULE}.gnu.linkonce.lit4)
+        *(.${MODULE}.literal)
+        *(.${MODULE}.literal.*)
+        *(.${MODULE}.gnu.linkonce.t*)
+        *(.${MODULE}.text)
+        *(.${MODULE}.text.*)
+        *(.${MODULE}.cmi.literal)
+        _${MODULE}_text_end = ABSOLUTE(.);
+    } >HPSRAM_seg AT>IMR_seg : ${MODULE}_text_phdr
+
+    .${MODULE}.cmi.text : ALIGN(8) {
+        _${MODULE}_cmi_text_start = ABSOLUTE(.);
+        *(.${MODULE}.cmi.text)
+        _${MODULE}_cmi_text_end = ABSOLUTE(.);
+    } >HPSRAM_seg AT>IMR_seg : ${MODULE}_cmi_text_phdr
+}

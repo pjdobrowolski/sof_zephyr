@@ -1,0 +1,10 @@
+
+MEMORY {
+    IMR_seg : org = ${IMR}, len = 0xFFFFFFFF
+    HPSRAM_seg : org = ${HPSRAM}, len = 0xFFFFFFFF
+}
+
+PHDRS {
+    IMR_phdr PT_LOAD;
+    HPSRAM_phdr PT_LOAD;
+}
