@@ -8,6 +8,8 @@
 #ifndef _LOADABLE_PROCESSING_MODULE_H_
 #define _LOADABLE_PROCESSING_MODULE_H_
 
+#include "adsp_stddef.h"
+
 #ifdef __XTENSA__
 /*!
  * \def SECTION_ATTRIBUTE(sect_name)
@@ -42,7 +44,7 @@
  * \brief Type definition of the package entry point.
  * \note internal purpose.
  */
-typedef int (ModulePackageEntryPoint)(uint32_t, uint32_t, uint32_t, const void*, void*, void**);
+typedef int (ModulePackageEntryPoint)(uint32_t costam);
 
 
 /*! \def MODULE_PACKAGE_ENTRY_POINT_NAME(MODULE)
@@ -78,7 +80,7 @@ typedef int (ModulePackageEntryPoint)(uint32_t, uint32_t, uint32_t, const void*,
  * \note internal purpose.
  */
 #define DECLARE_MODULE_PACKAGE_ENTRY_POINT(MODULE) \
-    extern "C" ModulePackageEntryPoint MODULE_PACKAGE_ENTRY_POINT_NAME(MODULE) MODULE_ENTRYPOINT_SECTION;
+    ModulePackageEntryPoint MODULE_PACKAGE_ENTRY_POINT_NAME(MODULE) MODULE_ENTRYPOINT_SECTION;
 
 /*! \def DECLARE_MODULE_PLACEHOLDER_NAME(MODULE)
  * package entry point declaration.
@@ -86,14 +88,13 @@ typedef int (ModulePackageEntryPoint)(uint32_t, uint32_t, uint32_t, const void*,
  */
 #define DECLARE_MODULE_PLACEHOLDER_NAME(MODULE) \
     enum{ MODULE_PLACEHOLDER_LENGTH_NAME(MODULE) = ((sizeof(MODULE)+MODULE_INSTANCE_ALIGNMENT-1) & (~(MODULE_INSTANCE_ALIGNMENT-1))) }; \
-    extern "C" \
 	{ intptr_t MODULE_PLACEHOLDER_NAME(MODULE)[(MODULE_PLACEHOLDER_LENGTH_NAME(MODULE)+sizeof(intptr_t)-1)/sizeof(intptr_t)] FIRST_MODULE_SECTION; }
 
 /*! \def DEFINE_MODULE_PACKAGE_ENTRY_POINT(MODULE, MODULE_FACTORY)
  * package entry point definition.
  * \note internal purpose.
  */
-#define DEFINE_MODULE_PACKAGE_ENTRY_POINT(MODULE, MODULE_FACTORY) \
+#define DEFINE_MODULE_PACKAGE_ENTRY_POINT(MODULE) \
     volatile AdspBuildInfo MODULE_PACKAGE_ENTRY_BUILD_INFO_NAME(MODULE) BUILD_INFO_SECTION = \
     { \
         ADSP_BUILD_INFO_FORMAT, \
@@ -101,17 +102,21 @@ typedef int (ModulePackageEntryPoint)(uint32_t, uint32_t, uint32_t, const void*,
             ((0x3FF&MIDDLE_IADSP_API_VERSION)<<10) | \
             ((0x3FF&MINOR_IADSP_API_VERSION)<<0) )} \
     }; \
-    int MODULE_PACKAGE_ENTRY_POINT_NAME(MODULE)(uint32_t, uint32_t instance_id, uint32_t c, const void* d, void* e, void** f) \
+    int MODULE_PACKAGE_ENTRY_POINT_NAME(MODULE)(uint32_t costam) \
     { \
         (void) MODULE_PACKAGE_ENTRY_BUILD_INFO_NAME(MODULE).FORMAT; \
         (void) MODULE_PACKAGE_ENTRY_BUILD_INFO_NAME(MODULE).API_VERSION_NUMBER.full; \
-        MODULE_FACTORY factory(*reinterpret_cast<intel_adsp::SystemAgentInterface*>(*f)); \
         return loadable_module_main(); \
     }
 
-#define DECLARE_LOADABLE_MODULE(MODULE, MODULE_FACTORY) \
+#define DECLARE_LOADABLE_MODULE(MODULE) \
+    DEFINE_MODULE_PACKAGE_ENTRY_POINT(MODULE)
+
+/*
+ * #define DECLARE_LOADABLE_MODULE(MODULE, MODULE_FACTORY) \
     DECLARE_MODULE_PLACEHOLDER_NAME(MODULE) \
     DECLARE_MODULE_PACKAGE_ENTRY_POINT(MODULE) \
     DEFINE_MODULE_PACKAGE_ENTRY_POINT(MODULE, MODULE_FACTORY)
+ */
 
 #endif /* _LOADABLE_PROCESSING_MODULE_H_ */
