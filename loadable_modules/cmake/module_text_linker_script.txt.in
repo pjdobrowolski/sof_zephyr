@@ -1,29 +1,31 @@
 
-EXTERN(${PACKAGE_ENTRY_POINT})
+/* EXTERN(${PACKAGE_ENTRY_POINT}) */
 
 PHDRS {
-    ${MODULE}_text_phdr PT_LOAD;
-    ${MODULE}_cmi_text_phdr PT_LOAD;
+    _text_phdr PT_LOAD;
+    _cmi_text_phdr PT_LOAD;
 }
 
 SECTIONS {
-    .${MODULE}.text : ALIGN(4096) {
-        _${MODULE}_text_start = ABSOLUTE(.);
-        *(.${MODULE}.buildinfo)
-        *(.${MODULE}.gnu.linkonce.literal.*)
-        *(.${MODULE}.gnu.linkonce.lit4)
-        *(.${MODULE}.literal)
-        *(.${MODULE}.literal.*)
-        *(.${MODULE}.gnu.linkonce.t*)
-        *(.${MODULE}.text)
-        *(.${MODULE}.text.*)
-        *(.${MODULE}.cmi.literal)
-        _${MODULE}_text_end = ABSOLUTE(.);
-    } >HPSRAM_seg AT>IMR_seg : ${MODULE}_text_phdr
+    .text : ALIGN(4096) {
+        __text_start = ABSOLUTE(.);
+        *(.buildinfo)
+        *(.gnu.linkonce.literal.*)
+        *(.gnu.linkonce.lit4)
+        *(.literal)
+        *(.literal.*)
+        *(.gnu.linkonce.t*)
+        *(.text)
+        *(.text.*)
+        *(.cmi.literal)
+        __text_end = ABSOLUTE(.);
+        /* ALIGN(4096) */
+    } >HPSRAM_seg AT>IMR_seg : _text_phdr
 
-    .${MODULE}.cmi.text : ALIGN(8) {
-        _${MODULE}_cmi_text_start = ABSOLUTE(.);
-        *(.${MODULE}.cmi.text)
-        _${MODULE}_cmi_text_end = ABSOLUTE(.);
-    } >HPSRAM_seg AT>IMR_seg : ${MODULE}_cmi_text_phdr
+    .cmi.text : ALIGN(4096) {
+        __cmi_text_start = ABSOLUTE(.);
+        *(.cmi.text)
+        __cmi_text_end = ABSOLUTE(.);
+        /* ALIGN(4096) */
+    } >HPSRAM_seg AT>IMR_seg : _cmi_text_phdr
 }

@@ -1,20 +1,20 @@
 
 PHDRS {
-    ${MODULE}_bss_phdr PT_LOAD;
+    _bss_phdr PT_LOAD;
 }
 
 SECTIONS {
-    ${MODULE}_max_instances = 1;
-    ${MODULE}_max_instances-1 = ${MODULE}_max_instances - 1;
+    _max_instances = 1;
+    _max_instances-1 = _max_instances - 1;
 
-    .${MODULE}.noload (NOLOAD) : ALIGN(4096) {
-        _${MODULE}_first_start = ABSOLUTE(.);
-        *(.${MODULE}.first)
-        _${MODULE}_first_end = ABSOLUTE(.);
-        _${MODULE}_next_start = ABSOLUTE(.);
-        . += (_${MODULE}_first_end - _${MODULE}_first_start) * ${MODULE}_max_instances-1;
-        _${MODULE}_next_end = ABSOLUTE(.);
-        *(.${MODULE}.bss)
-        *(.${MODULE}.bss.*)
-    } >HPSRAM_seg AT>IMR_seg : ${MODULE}_bss_phdr
+    .bss (NOLOAD) : ALIGN(4096) {
+        __first_start = ABSOLUTE(.);
+        *(.first)
+        __first_end = ABSOLUTE(.);
+        __next_start = ABSOLUTE(.);
+        . += (__first_end - __first_start) * _max_instances-1;
+        __next_end = ABSOLUTE(.);
+        *(.bss)
+        *(.bss.*)
+    } >HPSRAM_seg AT>IMR_seg : _bss_phdr
 }

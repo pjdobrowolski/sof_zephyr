@@ -10,8 +10,12 @@ add_definitions( -imacros${ZEPHYR_BASE}/include/zephyr/toolchain/xcc_missing_def
 
 project(module_example)
 
-set(MODULES_LIST module_example)
+list(APPEND MODULES_LIST module_example)
+list(APPEND MODULES_LIST module_example2)
 
 include(../../cmake/build_library.cmake)
-target_include_directories(module_example PUBLIC "../../../../zephyr/lib/libc/minimal/include"
-"../../../../zephyr/include/zephyr/toolchain")
+
+foreach(MODULE ${MODULES_LIST})
+	target_include_directories(${MODULE} PUBLIC "../../../../zephyr/lib/libc/minimal/include"
+	"../../../../zephyr/include/zephyr/toolchain")
+endforeach()
