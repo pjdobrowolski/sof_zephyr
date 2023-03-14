@@ -9,8 +9,12 @@
 
 DECLARE_LOADABLE_MODULE(module_example)
 
+unsigned int zmienna;
+
 int loadable_module_main(void){
-	while(1);
+	zmienna = 10;
+	while (1)
+		zmienna++;
 	return 0;
 }
 
