@@ -106,7 +106,7 @@ typedef int (ModulePackageEntryPoint)(uint32_t costam);
     { \
         (void) MODULE_PACKAGE_ENTRY_BUILD_INFO_NAME(MODULE).FORMAT; \
         (void) MODULE_PACKAGE_ENTRY_BUILD_INFO_NAME(MODULE).API_VERSION_NUMBER.full; \
-        return loadable_module_main(); \
+        return 0xAFAFAFAF; \
     }
 
 #define DECLARE_LOADABLE_MODULE(MODULE) \
