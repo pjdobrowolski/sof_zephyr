@@ -10,19 +10,17 @@
 
 #include <errno.h>
 #include <stdbool.h>
-#include <stdint.h>
 #include <sof/common.h>
 #include <rtos/sof.h>
 #include <rtos/string.h>
 #include <ipc4/notification.h>
 #include <sof/ipc/msg.h>
-#include <adsp_error_code.h>
-#include <system_service.h>
+#include <native_system_service.h>
 #include <sof/lib_manager.h>
 
 #define RSIZE_MAX 0x7FFFFFFF
 
-void SystemServiceLogMessage(AdspLogPriority log_priority, uint32_t log_entry,
+void native_system_service_log_message(AdspLogPriority log_priority, uint32_t log_entry,
 			     AdspLogHandle const *log_handle, uint32_t param1, uint32_t param2,
 			     uint32_t param3, uint32_t param4)
 {
@@ -49,13 +47,13 @@ void SystemServiceLogMessage(AdspLogPriority log_priority, uint32_t log_entry,
 	}
 }
 
-AdspErrorCode SystemServiceSafeMemcpy(void *RESTRICT dst, size_t maxlen, const void *RESTRICT src,
+AdspErrorCode native_system_service_safe_memcpy(void *RESTRICT dst, size_t maxlen, const void *RESTRICT src,
 				      size_t len)
 {
 	return (AdspErrorCode) memcpy_s(dst, maxlen, src, len);
 }
 
-AdspErrorCode SystemServiceSafeMemmove(void *dst, size_t maxlen, const void *src, size_t len)
+AdspErrorCode native_system_service_safe_memmove(void *dst, size_t maxlen, const void *src, size_t len)
 {
 	if (dst == NULL || maxlen > RSIZE_MAX)
 		return ADSP_INVALID_PARAMETERS;
@@ -75,14 +73,14 @@ AdspErrorCode SystemServiceSafeMemmove(void *dst, size_t maxlen, const void *src
 	return ADSP_NO_ERROR;
 }
 
-void *SystemServiceVecMemset(void *dst, int c, size_t len)
+void *native_system_service_vec_memset(void *dst, int c, size_t len)
 {
 	/* TODO: Currently simple memset. Should be changed. */
 	memset(dst, c, len);
 	return dst;
 }
 
-AdspErrorCode SystemServiceCreateNotification(NotificationParams *params,
+AdspErrorCode native_system_service_create_notification(NotificationParams *params,
 					      uint8_t *notification_buffer,
 					      uint32_t notification_buffer_size,
 					      AdspNotificationHandle *handle)
@@ -91,8 +89,6 @@ AdspErrorCode SystemServiceCreateNotification(NotificationParams *params,
 		|| (notification_buffer_size <= 0) || (handle == NULL))
 		return ADSP_INVALID_PARAMETERS;
 
-	/* TODO: IPC header setup */
-	/* https://github.com/thesofproject/sof/pull/5720 needed for completion. */
 	union ipc4_notification_header header;
 
 	header.r.notif_type = params->type;
@@ -110,7 +106,7 @@ AdspErrorCode SystemServiceCreateNotification(NotificationParams *params,
 	return ADSP_NO_ERROR;
 }
 
-AdspErrorCode SystemServiceSendNotificationMessage(NotificationTarget notification_target,
+AdspErrorCode native_system_service_send_notification_message(NotificationTarget notification_target,
 						   AdspNotificationHandle message,
 						   uint32_t actual_payload_size)
 {
@@ -123,10 +119,19 @@ AdspErrorCode SystemServiceSendNotificationMessage(NotificationTarget notificati
 	return ADSP_NO_ERROR;
 }
 
-AdspErrorCode SystemServiceGetInterface(AdspIfaceId id, SystemServiceIface  **iface)
+AdspErrorCode native_system_service_get_interface(AdspIfaceId id, SystemServiceIface  **iface)
 {
 	if (id < 0)
 		return ADSP_INVALID_PARAMETERS;
 	return ADSP_NO_ERROR;
 }
 
+struct native_system_service_api native_system_service= {
+	.log_message  = native_system_service_log_message,
+	.safe_memcpy = native_system_service_safe_memcpy,
+	.safe_memmove = native_system_service_safe_memmove,
+	.vec_memset = native_system_service_vec_memset,
+	.notification_create = native_system_service_create_notification,
+	.notification_send = native_system_service_send_notification_message,
+	.get_interface = native_system_service_get_interface
+};

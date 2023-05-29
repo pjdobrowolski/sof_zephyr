@@ -207,7 +207,7 @@ struct processing_module {
 	bool is_native_sof;
 
 	/* pointer to system services for loadable modules */
-	struct adsp_system_service *sys_service;
+	uint32_t *sys_service;
 
 	/* table containing the list of connected sources */
 	struct module_source_info *source_info;

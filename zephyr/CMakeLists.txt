@@ -591,11 +591,11 @@ zephyr_include_directories_ifdef(CONFIG_INTEL_MODULES
 
 zephyr_library_sources_ifdef(CONFIG_INTEL_MODULES
 	${SOF_AUDIO_PATH}/module_adapter/module/modules.c
-	${SOF_AUDIO_PATH}/module_adapter/iadk/system_service.c
 	${SOF_AUDIO_PATH}/module_adapter/iadk/module_initial_settings_concrete.cpp
 	${SOF_AUDIO_PATH}/module_adapter/iadk/iadk_module_adapter.cpp
 	${SOF_AUDIO_PATH}/module_adapter/iadk/system_agent.cpp
 	${SOF_AUDIO_PATH}/module_adapter/library/native_system_agent.c
+	${SOF_AUDIO_PATH}/module_adapter/library/native_system_service.c
 )
 
 if (CONFIG_COMP_MODULE_ADAPTER)
