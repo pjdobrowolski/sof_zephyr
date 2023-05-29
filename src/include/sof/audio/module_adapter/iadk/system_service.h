@@ -13,12 +13,14 @@
 
 #include <stdint.h>
 
+
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wextern-c-compat"
 #endif //__clang__
 
 #ifdef __cplusplus
+#include "native_system_service.h"
 extern "C" {
 #endif
 
@@ -145,14 +147,14 @@ typedef AdspErrorCode (*SystemServiceSendNotificationMessageFct) (
 						    AdspNotificationHandle message,
 						    uint32_t actual_payload_size);
 
-typedef enum _AdspIfaceId {
-	IfaceIdGNA = 0x1000,			/*!< Reserved for ADSP system */
-	IfaceIdInferenceService = 0x1001,	/*!< See InferenceServiceInterface */
-	IfaceIdSDCA = 0x1002,			/*!< See SdcaInterface */
-	IfaceIdAsyncMessageService = 0x1003,	/*!< See AsyncMessageInterface */
-	IfaceIdAMService = 0x1005,		/*!< Reserved for ADSP system */
-	IfaceIdKpbService = 0x1006		/*!< See KpbInterface */
-} AdspIfaceId;
+//typedef enum _AdspIfaceId {
+//	IfaceIdGNA = 0x1000,			/*!< Reserved for ADSP system */
+//	IfaceIdInferenceService = 0x1001,	/*!< See InferenceServiceInterface */
+//	IfaceIdSDCA = 0x1002,			/*!< See SdcaInterface */
+//	IfaceIdAsyncMessageService = 0x1003,	/*!< See AsyncMessageInterface */
+//	IfaceIdAMService = 0x1005,		/*!< Reserved for ADSP system */
+//	IfaceIdKpbService = 0x1006		/*!< See KpbInterface */
+//} AdspIfaceId;
 
 /*! \brief sub interface definition.
  * This type may contain generic interface properties like id or struct size if needed.
@@ -174,56 +176,8 @@ typedef AdspErrorCode (*SystemServiceGetInterfaceFct) (AdspIfaceId id, SystemSer
  * intel_adsp::ProcessingModuleFactory::GetSystemService() method
  * or the intel_adsp::ProcessingModule::GetSysstemService() method.
  */
-typedef struct adsp_system_service {
-	/*! The SystemService::LogMessage function provides capability to send some log message to
-	 * the host for debugging purposes. This log can be caught by the FDK Tools and displayed
-	 * in the Debug window. The prototype of this function is given by the
-	 * \ref SystemServiceLogMessageFct typedef.
-	 *
-	 * \remarks This service function is not expected to be called directly by the user code.
-	 * Instead, the LOG_MESSAGE should be invoked for this purpose.
-	 */
-	const SystemServiceLogMessageFct LogMessage;
 
-	/*! The SystemService::SafeMemcpy function provides capability to use SafeMemcpy function
-	 * provided by ADSP System.
-	 * The prototype of this function is given by the \ref SystemServiceSafeMemcpyFct typedef.
-	 */
-	const SystemServiceSafeMemcpyFct SafeMemcpy;
-
-	/*! The SystemService::SafeMemmove function provides capability to use SafeMemmove function
-	 * provided by ADSP System.
-	 * The prototype of this function is given by the \ref SystemServiceSafeMemmoveFct typedef.
-	 */
-	const SystemServiceSafeMemmoveFct SafeMemmove;
-
-	/*! The SystemService::VecMemset function provides capability to use VecMemset function
-	 * provided by ADSP System.
-	 * The prototype of this function is given by the \ref SystemServiceVecMemsetFct typedef.
-	 */
-	const SystemServiceVecMemsetFct VecMemset;
-
-	/*! The SystemService::NotificationCreate function provides capability to use
-	 * NotificationCreate function provided by ADSP System.
-	 * The prototype of this function is given by the
-	 * \ref SystemServiceCreateNotificationFct typedef.
-	 */
-	const SystemServiceCreateNotificationFct NotificationCreate;
-
-	/*! The SystemService::NotificationSend function provides capability to use
-	 * NotificationSend function provided by ADSP System.
-	 * The prototype of this function is given by the \ref
-	 * SystemServiceSendNotificationMessageFct typedef.
-	 */
-	const SystemServiceSendNotificationMessageFct NotificationSend;
-
-	/*! The SystemService::GetInterface function provides capability to retrieve additional
-	 * services provided by ADSP System. The prototype of this function is given by the \ref
-	 * SystemServiceGetInterfaceFct typedef.
-	 */
-	const SystemServiceGetInterfaceFct GetInterface;
-
-} adsp_system_service;
+typedef struct native_system_service_api adsp_system_service;
 
 #ifdef __cplusplus
 namespace intel_adsp
