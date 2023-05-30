@@ -119,7 +119,7 @@ AdspErrorCode native_system_service_send_notification_message(adsp_notification_
 	return ADSP_NO_ERROR;
 }
 
-AdspErrorCode native_system_service_get_interface(adsp_iface_id id, SystemServiceIface  **iface)
+AdspErrorCode native_system_service_get_interface(adsp_iface_id id, system_service_iface  **iface)
 {
 	if (id < 0)
 		return ADSP_INVALID_PARAMETERS;

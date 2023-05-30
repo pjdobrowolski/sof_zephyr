@@ -54,7 +54,7 @@ extern "C" {
 							   adsp_notification_handle message,
 							   uint32_t actual_payload_size);
 
-	AdspErrorCode native_system_service_get_interface(adsp_iface_id id, SystemServiceIface **iface);
+	AdspErrorCode native_system_service_get_interface(adsp_iface_id id, system_service_iface **iface);
 }
 
 namespace intel_adsp
@@ -63,7 +63,7 @@ namespace system
 {
 
 /* Structure storing handles to system service operations */
-struct adsp_system_service SystemAgent::system_service_ = {
+adsp_system_service SystemAgent::system_service_ = {
 	native_system_service_log_message,
 	native_system_service_safe_memcpy,
 	native_system_service_safe_memmove,
