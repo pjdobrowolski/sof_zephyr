@@ -73,7 +73,7 @@ extern "C" {
 ////					 */
 ////} NotificationType;
 //
-///*! \brief Defines prototype of the "LogMessage" function
+///*! \brief Defines prototype of the "log_message" function
 // *
 // * \param log_priority define the log priority for the message to be sent.
 // *        The ADSP System may have been configured by the host to filter log message below
@@ -87,7 +87,7 @@ extern "C" {
 // *
 // * \see LOG_MESSAGE
 // */
-//typedef void (*SystemServiceLogMessageFct) (AdspLogPriority log_priority, uint32_t log_entry,
+//typedef void (*SystemServicelog_messageFct) (AdspLogPriority log_priority, uint32_t log_entry,
 //					    AdspLogHandle const *log_handle, uint32_t param1,
 //					    uint32_t param2, uint32_t param3, uint32_t param4);
 //

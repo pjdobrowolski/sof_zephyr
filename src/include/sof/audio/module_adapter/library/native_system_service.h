@@ -44,7 +44,7 @@ typedef struct _module_event_notification {
 typedef enum _notification_target {
 	DSP_TO_HOST = 1,  /*!< Notification target is HOST */
 	DSP_TO_ISH = 2    /*!< Notification target is ISH */
-} notification_target;
+} adsp_notification_target;
 
 /*! \brief Defines notification types supported by ADSP system */
 typedef enum _notification_type {
@@ -97,7 +97,7 @@ struct native_system_service_api{
 						      uint8_t *notification_buffer,
 						      uint32_t notification_buffer_size,
 						      adsp_notification_handle *handle);
-	AdspErrorCode (*notification_send)(notification_target notification_target,
+	AdspErrorCode (*notification_send)(adsp_notification_target notification_target,
 							   adsp_notification_handle message,
 							   uint32_t actual_payload_size);
 

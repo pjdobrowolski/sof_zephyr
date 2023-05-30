@@ -83,7 +83,7 @@ void *native_system_service_vec_memset(void *dst, int c, size_t len)
 AdspErrorCode native_system_service_create_notification(notification_params *params,
 					      uint8_t *notification_buffer,
 					      uint32_t notification_buffer_size,
-					      AdspNotificationHandle *handle)
+					      adsp_notification_handle *handle)
 {
 	if ((params == NULL) || (notification_buffer == NULL)
 		|| (notification_buffer_size <= 0) || (handle == NULL))
@@ -99,15 +99,15 @@ AdspErrorCode native_system_service_create_notification(notification_params *par
 	struct ipc_msg *msg = lib_notif_msg_init((uint32_t)header.dat, notification_buffer_size);
 
 	if (msg) {
-		*handle = (AdspNotificationHandle)msg;
+		*handle = (adsp_notification_handle)msg;
 		params->payload = msg->tx_data;
 	}
 
 	return ADSP_NO_ERROR;
 }
 
-AdspErrorCode native_system_service_send_notification_message(NotificationTarget notification_target,
-						   AdspNotificationHandle message,
+AdspErrorCode native_system_service_send_notification_message(adsp_notification_target notification_target,
+						   adsp_notification_handle message,
 						   uint32_t actual_payload_size)
 {
 	if ((message == NULL) || (actual_payload_size == 0))
@@ -119,7 +119,7 @@ AdspErrorCode native_system_service_send_notification_message(NotificationTarget
 	return ADSP_NO_ERROR;
 }
 
-AdspErrorCode native_system_service_get_interface(AdspIfaceId id, SystemServiceIface  **iface)
+AdspErrorCode native_system_service_get_interface(adsp_iface_id id, SystemServiceIface  **iface)
 {
 	if (id < 0)
 		return ADSP_INVALID_PARAMETERS;

@@ -48,13 +48,13 @@ extern "C" {
 	AdspErrorCode native_system_service_create_notification(notification_params *params,
 						      uint8_t *notification_buffer,
 						      uint32_t notification_buffer_size,
-						      AdspNotificationHandle *handle);
+						      adsp_notification_handle *handle);
 
-	AdspErrorCode native_system_service_send_notification_message(NotificationTarget notification_target,
-							   AdspNotificationHandle message,
+	AdspErrorCode native_system_service_send_notification_message(adsp_notification_target notification_target,
+							   adsp_notification_handle message,
 							   uint32_t actual_payload_size);
 
-	AdspErrorCode native_system_service_get_interface(AdspIfaceId id, SystemServiceIface **iface);
+	AdspErrorCode native_system_service_get_interface(adsp_iface_id id, SystemServiceIface **iface);
 }
 
 namespace intel_adsp
