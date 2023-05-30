@@ -22,6 +22,7 @@
 #ifdef __cplusplus
 #include "native_system_service.h"
 extern "C" {
+struct native_system_service_api;
 #endif
 
 /*! \brief This struct defines the obfuscating type for notifications. */
@@ -176,7 +177,6 @@ extern "C" {
  * intel_adsp::ProcessingModuleFactory::GetSystemService() method
  * or the intel_adsp::ProcessingModule::GetSysstemService() method.
  */
-
 typedef struct native_system_service_api adsp_system_service;
 
 #ifdef __cplusplus
