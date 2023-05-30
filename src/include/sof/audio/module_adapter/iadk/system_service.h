@@ -10,7 +10,7 @@
 #include "logger.h"
 #include "adsp_stddef.h"
 #include "adsp_error_code.h"
-
+#include "native_system_service.h"
 #include <stdint.h>
 
 
@@ -20,9 +20,7 @@
 #endif //__clang__
 
 #ifdef __cplusplus
-#include "native_system_service.h"
 extern "C" {
-struct native_system_service_api;
 #endif
 
 /*! \brief This struct defines the obfuscating type for notifications. */
@@ -180,6 +178,9 @@ struct native_system_service_api;
 typedef struct native_system_service_api adsp_system_service;
 
 #ifdef __cplusplus
+
+
+
 namespace intel_adsp
 {
 /*! \brief Alias type of adsp_system_service which can be used in C++.

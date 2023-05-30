@@ -32,7 +32,6 @@ void* operator new(size_t size, intel_adsp::ModuleHandle *placeholder) throw()
 }
 
 extern "C" {
-	struct native_system_service_api;
 	void native_system_service_log_message (AdspLogPriority log_priority, uint32_t log_entry,
 				      AdspLogHandle const* log_handle, uint32_t param1,
 				      uint32_t param2, uint32_t param3, uint32_t param4);
