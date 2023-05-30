@@ -45,7 +45,7 @@ extern "C" {
 
 	void* native_system_service_vec_memset(void *dst, int c, size_t len);
 
-	AdspErrorCode native_system_service_create_notification(NotificationParams *params,
+	AdspErrorCode native_system_service_create_notification(notification_params *params,
 						      uint8_t *notification_buffer,
 						      uint32_t notification_buffer_size,
 						      AdspNotificationHandle *handle);

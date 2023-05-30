@@ -28,7 +28,7 @@ extern "C" {
 //typedef struct _AdspNotificationHandle {} *AdspNotificationHandle;
 //
 ///*! \brief Defines parameters used by ADSP system during notification creation. */
-//typedef struct _NotificationParams {
+//typedef struct _notification_params {
 //	uint32_t type;              /*!< Notification type */
 //	uint16_t user_val_1;        /*!< 16 bits user value available directly in IPC header
 //				     * for some notifications
@@ -40,7 +40,7 @@ extern "C" {
 //				     * value to max possible payload size)
 //				     */
 //	uint8_t *payload;           /*!< Pointer on the payload */
-//} NotificationParams;
+//} notification_params;
 //
 ///*! \brief Defines parameters used by ADSP system during Module Event notification creation. */
 //typedef struct _ModuleEventNotification {
@@ -124,13 +124,13 @@ extern "C" {
 //
 ///*! \brief Defines prototype of the "NotificationCreate" function
 // *
-// * \param params pointer on NotificationParams input structure
+// * \param params pointer on notification_params input structure
 // * \param notification_buffer pointer on the notification buffer declared in module
 // * \param notification_buffer_size size of the notification buffer declared in module
 // * \param handle pointer on AdspNotificationHandle structure
 // * \return error if notification_buffer is too small or NULL
 // */
-//typedef AdspErrorCode (*SystemServiceCreateNotificationFct) (NotificationParams *params,
+//typedef AdspErrorCode (*SystemServiceCreateNotificationFct) (notification_params *params,
 //							     uint8_t *notification_buffer,
 //							     uint32_t notification_buffer_size,
 //							     AdspNotificationHandle *handle);
