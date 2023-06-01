@@ -42,7 +42,7 @@ extern "C" {
 	AdspErrorCode native_system_service_safe_memmove(void *dst, size_t maxlen,
 					       const void *src, size_t len);
 
-	void* native_system_service_vec_memset(void *dst, int c, size_t len);
+	void native_system_service_vec_memset(void *dst, int c, size_t len);
 
 	AdspErrorCode native_system_service_create_notification(notification_params *params,
 						      uint8_t *notification_buffer,
