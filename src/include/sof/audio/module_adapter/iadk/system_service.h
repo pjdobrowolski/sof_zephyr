@@ -13,7 +13,6 @@
 #include "native_system_service.h"
 #include <stdint.h>
 
-
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wextern-c-compat"
