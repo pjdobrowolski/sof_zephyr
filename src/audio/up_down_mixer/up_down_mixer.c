@@ -40,7 +40,7 @@ DECLARE_TR_CTX(up_down_mixer_comp_tr, SOF_UUID(up_down_mixer_comp_uuid),
 
 int32_t custom_coeffs[UP_DOWN_MIX_COEFFS_LENGTH];
 
-static int set_downmix_coefficients(struct processing_module *mod,
+static int up_down_mixer_set_downmix_coefficients(struct processing_module *mod,
 				    const struct ipc4_audio_format *format,
 				    const enum ipc4_channel_config out_channel_config,
 				    const downmix_coefficients downmix_coefficients)
@@ -102,7 +102,7 @@ static int set_downmix_coefficients(struct processing_module *mod,
 		cd->downmix_coefficients = k_scaled_lo_ro_downmix32bit;
 		break;
 	default:
-		comp_err(dev, "set_downmix_coefficients(): invalid channel config.");
+		comp_err(dev, "up_down_mixer_set_downmix_coefficients(): invalid channel config.");
 		return -EINVAL;
 	}
 
@@ -321,7 +321,7 @@ static int init_mix(struct processing_module *mod,
 	cd->in_channel_map = format->ch_map;
 	cd->in_channel_config = format->ch_cfg;
 
-	return set_downmix_coefficients(mod, format, out_channel_config, downmix_coefficients);
+	return up_down_mixer_set_downmix_coefficients(mod, format, out_channel_config, downmix_coefficients);
 }
 
 static int up_down_mixer_free(struct processing_module *mod)
