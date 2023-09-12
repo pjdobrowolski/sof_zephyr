@@ -43,6 +43,8 @@ foreach(MODULE ${MODULES_LIST})
 	)
 endforeach()
 
+include(${CMAKE_CURRENT_LIST_DIR}/signing.cmake)
+
 set(RIMAGE_OUTPUT_FILE ${PROJECT_NAME}_noextmft)
 set(OUTPUT_FILE ${PROJECT_NAME}.bin)
 
