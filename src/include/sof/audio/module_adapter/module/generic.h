@@ -13,7 +13,6 @@
 #define __SOF_AUDIO_MODULE_GENERIC__
 
 #include <sof/audio/component.h>
-#include <sof/lib/memory.h>
 #include <sof/audio/sink_api.h>
 #include <sof/audio/source_api.h>
 #include <sof/audio/dp_queue.h>
