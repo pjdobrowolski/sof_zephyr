@@ -6,12 +6,10 @@
  */
 
 #ifdef __ZEPHYR__
-
 #include <zephyr/toolchain.h>
 
 /* Get __sparse_cache and __sparse_force definitions if __CHECKER__ is defined */
 #include <zephyr/debug/sparse.h>
-
 #else
 
 #define __sparse_cache

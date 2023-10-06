@@ -14,11 +14,11 @@
 #ifndef __XTOS_RTOS_IDC_H__
 #define __XTOS_RTOS_IDC_H__
 
-#include <arch/drivers/idc.h>
-#include <platform/drivers/idc.h>
+//#include <arch/drivers/idc.h>
+//#include <platform/drivers/idc.h>
 #include <rtos/task.h>
-#include <sof/trace/trace.h>
-#include <user/trace.h>
+//#include <sof/trace/trace.h>
+//#include <user/trace.h>
 #include <stdint.h>
 #include <rtos/cache.h>
 

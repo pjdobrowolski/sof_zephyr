@@ -22,9 +22,9 @@ target_include_directories(up_down_mixer PRIVATE "${SOF_SRC_DIR}/include"
  												 "${SOF_SRC_DIR}/include/math"
  												 "${SOF_SRC_DIR}/include/lib"
 												 "${SOF_SRC_DIR}/include/sof/audio/module_adapter/iadk"
-												 "${SOF_SRC_DIR}/platform/library/include"
- 												 "${SOF_SRC_DIR}/../zephyr/include"
-												 "${SOF_SRC_DIR}/../xtos/include"
-												 "${ZEPHYR_SRC_DIR}"
-												 "${ZEPHYR_SRC_DIR}/../../../../include"
-												 "${ZEPHYR_SRC_DIR}/../../../../include/zephyr")
+												 "${SOF_SRC_DIR}/platform/library/include")
+# 												 "${SOF_SRC_DIR}/../zephyr/include"
+#												 "${SOF_SRC_DIR}/../xtos/include"
+#												 "${ZEPHYR_SRC_DIR}"
+#												 "${ZEPHYR_SRC_DIR}/../../../../include"
+#												 "${ZEPHYR_SRC_DIR}/../../../../include/zephyr")

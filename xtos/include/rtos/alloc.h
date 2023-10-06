@@ -17,8 +17,8 @@
 #define __SOF_LIB_ALLOC_H__
 
 #include <rtos/bit.h>
-#include <rtos/string.h>
-#include <sof/trace/trace.h>
+//#include <rtos/string.h>
+//#include <sof/trace/trace.h>
 #include <user/trace.h>
 
 #include <stddef.h>

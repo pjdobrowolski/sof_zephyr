@@ -16,13 +16,10 @@
 #ifndef __SOF_AUDIO_COMPONENT_H__
 #define __SOF_AUDIO_COMPONENT_H__
 
-#include <sof/audio/buffer.h>
-#include <sof/audio/format.h>
 #include <rtos/idc.h>
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
 #include <ipc/control.h>
-#include <sof/ipc/topology.h>
 #include <kernel/abi.h>
 
 struct comp_dev;

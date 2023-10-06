@@ -8,7 +8,7 @@
 #define __SOF_SINK_API_H__
 
 #include <sof/common.h>
-#include <errno.h>
+//#include <errno.h>
 #include <stdint.h>
 #include <stdbool.h>
 
