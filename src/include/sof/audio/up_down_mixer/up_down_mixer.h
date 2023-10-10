@@ -8,12 +8,12 @@
 #ifndef __SOF_AUDIO_UP_DOWN_MIXER_H__
 #define __SOF_AUDIO_UP_DOWN_MIXER_H__
 
-#include <sof/audio/component_ext.h>
+//#include <sof/audio/component_ext.h>
 #include <sof/audio/ipc-config.h>
 #include <sof/common.h>
 #include <ipc/stream.h>
 #include <ipc4/up_down_mixer.h>
-#include <ipc4/module.h>
+//#include <ipc4/module.h>
 #include <ipc4/base-config.h>
 #include <stddef.h>
 #include <stdint.h>

@@ -11,20 +11,21 @@
 
 #ifndef __SOF_AUDIO_MODULE_GENERIC__
 #define __SOF_AUDIO_MODULE_GENERIC__
-
 #include <sof/audio/component.h>
+#ifndef MODULE_PRIVAT
 #include <sof/audio/sink_api.h>
 #include <sof/audio/source_api.h>
 #include <sof/audio/dp_queue.h>
+#endif
 #include "module_interface.h"
-
+#ifndef MODULE_PRIVAT
 #if CONFIG_INTEL_MODULES
 #include "modules.h"
 #endif
 
 #define module_get_private_data(mod) (mod->priv.private)
 #define MAX_BLOB_SIZE 8192
-#define MODULE_MAX_SOURCES 8
+
 
 #define API_CALL(cd, cmd, sub_cmd, value, ret) \
 	do { \
@@ -81,7 +82,11 @@ UT_STATIC void sys_comp_module_##adapter##_init(void) \
 } \
 \
 DECLARE_MODULE(sys_comp_module_##adapter##_init)
-
+#else
+#include <sof/list.h>
+#endif
+#define MODULE_MAX_SOURCES 8
+#define module_get_private_data(mod) (mod->priv.private)
 /**
  * \enum module_state
  * \brief Module-specific states
@@ -92,7 +97,6 @@ enum module_state {
 	MODULE_IDLE, /**< Module is idle now. */
 	MODULE_PROCESSING, /**< Module is processing samples now. */
 };
-
 /**
  * \struct module_param
  * \brief Module TLV parameters container - used for both config types.
@@ -148,7 +152,6 @@ struct module_processing_data {
 	void *in_buff; /**< A pointer to module input buffer. */
 	void *out_buff; /**< A pointer to module output buffer. */
 };
-
 /** private, runtime module data */
 struct module_data {
 	enum module_state state;
@@ -266,6 +269,7 @@ bool module_is_ready_to_process(struct processing_module *mod,
 				struct sof_sink **sinks,
 				int num_of_sinks)
 {
+#ifndef MODULE_PRIVAT
 	struct module_data *md = &mod->priv;
 
 	/* LL module has to be always ready for processing */
@@ -280,6 +284,9 @@ bool module_is_ready_to_process(struct processing_module *mod,
 	 */
 	return (source_get_data_available(sources[0]) >= source_get_min_available(sources[0]) &&
 		sink_get_free_size(sinks[0]) >= sink_get_min_free_space(sinks[0]));
+#else
+	return 0;
+#endif
 }
 
 int module_process_sink_src(struct processing_module *mod,
@@ -334,11 +341,13 @@ static inline void module_update_buffer_position(struct input_stream_buffer *inp
 						 struct output_stream_buffer *output_buffers,
 						 uint32_t frames)
 {
+#ifndef MODULE_PRIVAT
 	struct audio_stream *source = input_buffers->data;
 	struct audio_stream *sink = output_buffers->data;
 
 	input_buffers->consumed += audio_stream_frame_bytes(source) * frames;
 	output_buffers->size += audio_stream_frame_bytes(sink) * frames;
+#endif
 }
 
 static inline int module_process_stream(struct processing_module *mod,
@@ -347,10 +356,14 @@ static inline int module_process_stream(struct processing_module *mod,
 					struct output_stream_buffer *output_buffers,
 					int num_output_buffers)
 {
+#ifndef MODULE_PRIVAT
 	struct module_data *md = &mod->priv;
 
 	return md->ops->process_audio_stream(mod, input_buffers, num_input_buffers,
 					     output_buffers, num_output_buffers);
+#else
+	return 0;
+#endif
 }
 
 #endif /* __SOF_AUDIO_MODULE_GENERIC__ */

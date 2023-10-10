@@ -15,10 +15,13 @@
 
 #ifndef __SOF_AUDIO_COMPONENT_H__
 #define __SOF_AUDIO_COMPONENT_H__
-
+#include <sof/list.h>
+#include <topology.h>
+#ifndef MODULE_PRIVAT
 #include <rtos/idc.h>
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
+#endif
 #include <ipc/control.h>
 #include <kernel/abi.h>
 
@@ -112,7 +115,8 @@ enum {
 #define COMP_ATTR_VDMA_INDEX	3	/**< Comp index of the virtual DMA at the gateway. */
 #define COMP_ATTR_BASE_CONFIG	4	/**< Component base config */
 /** @}*/
-
+//------------------------------------>
+#ifndef MODULE_PRIVAT
 /** \name Trace macros
  *  @{
  */
@@ -238,7 +242,8 @@ enum {
 		  (uint32_t)((pcd)->peak_mcps_period_cnt))
 
 /** @}*/
-
+#endif
+//<-----------------------------------------
 /** \brief Type of endpoint this component is connected to in a pipeline */
 enum comp_endpoint_type {
 	COMP_ENDPOINT_HOST,	/**< Connected to host dma */
@@ -288,6 +293,9 @@ struct comp_ops {
 	struct comp_dev *(*create)(const struct comp_driver *drv,
 				   const struct comp_ipc_config *ipc_config,
 				   const void *ipc_specific_config);
+
+	//------------------------->
+#ifndef MODULE_PRIVAT
 
 	/**
 	 * Called to delete the specified component device.
@@ -502,6 +510,7 @@ struct comp_ops {
 	 * @return total data processed if succeeded, 0 otherwise.
 	 */
 	uint64_t (*get_total_data_processed)(struct comp_dev *dev, uint32_t stream_no, bool input);
+#endif //MODULE_PRIVAT
 };
 
 /**
@@ -541,11 +550,19 @@ struct comp_ipc_config {
 	uint32_t ipc_config_size;	/**< size of a config received by ipc */
 #endif
 };
-
 /**
  * Audio component base device "class"
  * - used by other component types.
  */
+ 
+ /**
+  * Trace context.
+  */
+struct tr_ctx {
+	const struct sof_uuid_entry* uuid_p;	/**< UUID pointer, use SOF_UUID() to init */
+	uint32_t level;				/**< Default log level */
+};
+
 struct comp_dev {
 
 	/* runtime */
@@ -638,7 +655,7 @@ static inline enum sof_comp_type dev_comp_type(const struct comp_dev *dev)
 {
 	return dev->ipc_config.type;
 }
-
+#ifndef MODULE_PRIVAT
 /**
  * Allocates memory for the component device and initializes common part.
  * @param drv Parent component driver.
@@ -895,5 +912,5 @@ int comp_verify_params(struct comp_dev *dev, uint32_t flag,
 		       struct sof_ipc_stream_params *params);
 
 /** @}*/
-
+#endif //<---- MODULE_PRIVAT
 #endif /* __SOF_AUDIO_COMPONENT_H__ */
