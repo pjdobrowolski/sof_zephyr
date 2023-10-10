@@ -154,6 +154,7 @@ static int modules_init(struct processing_module *mod)
 			return -EINVAL;
 
 		ret = mod_in->init(mod);
+		mod->priv.ops = mod_in;
 	} else {
 		mod->proc_type = MODULE_PROCESS_TYPE_SOURCE_SINK;
 		ret = iadk_wrapper_init(md->module_adapter);
