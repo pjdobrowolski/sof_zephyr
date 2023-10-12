@@ -8,7 +8,7 @@
 #include <ipc4/up_down_mixer.h>
 
 
-#if CONFIG_COMP_UP_DOWN_MIXER
+#if CONFIG_COMP_UP_DOWN_MIXER || ~MODULE_PRIVAT
 
 #define COMPUTE_COEFF_32BIT(counter, denominator) ((0x7fffffffULL * (counter)) / (denominator))
 #define COMPUTE_COEFF_16BIT(counter, denominator) ((0x7fffULL * (counter)) / (denominator))
