@@ -19,6 +19,8 @@
 #include <ipc/header.h>
 #include <stdint.h>
 
+#define BIT(n)  (1UL << (n))
+
 /*
  * Component
  */

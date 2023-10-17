@@ -11,6 +11,7 @@
 #include <sof/audio/module_adapter/module/generic.h>
 #include <rimage/sof/user/manifest.h>
 #include <sof/audio/module_adapter/library/module_api_ver.h>
+#include <errno.h>
 
 // LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
 
