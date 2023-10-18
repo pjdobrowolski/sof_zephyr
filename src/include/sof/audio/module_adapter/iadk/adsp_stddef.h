@@ -11,7 +11,7 @@
 #include <user/trace.h>
 #include <rtos/string.h>
 
-#ifdef __ZEPHYR__
+#if defined __ZEPHYR__ && !defined MODULE_PRIVAT
 #include <zephyr/sys/util.h>
 #endif /* __ZEPHYR__ */
 

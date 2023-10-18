@@ -12,6 +12,8 @@
 #include <rimage/sof/user/manifest.h>
 #include <sof/audio/module_adapter/library/module_api_ver.h>
 #include <errno.h>
+#include <sof/audio/module_adapter/library/native_system_service.h>
+#include <stdlib.h>
 
 // LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
 
@@ -37,9 +39,11 @@ struct sof_module_api_build_info udm_build_info __attribute__((section(".buildin
 };
 
 extern struct module_interface up_down_mixer_interface;
+static struct native_system_service_api *system_service;
 
 void *loadable_udm_entry_point(void *mod_cfg, void *parent_ppl, void **mod_ptr)
 {
+	system_service = (struct native_system_service_api *)mod_cfg;
 	return &up_down_mixer_interface;
 }
 
@@ -68,7 +72,7 @@ static int set_downmix_coefficients(struct processing_module *mod,
 	int ret;
 
 	if (cd->downmix_coefficients) {
-		ret = memcpy_s(&custom_coeffs, sizeof(custom_coeffs), downmix_coefficients,
+		ret = system_service->safe_memcpy(&custom_coeffs, sizeof(custom_coeffs), downmix_coefficients,
 			       sizeof(int32_t) * UP_DOWN_MIX_COEFFS_LENGTH);
 
 		if (ret < 0)
@@ -346,9 +350,9 @@ static int up_down_mixer_free(struct processing_module *mod)
 {
 	struct up_down_mixer_data *cd = module_get_private_data(mod);
 
-	rfree(cd->buf_in);
-	rfree(cd->buf_out);
-	rfree(cd);
+	free(cd->buf_in);
+	free(cd->buf_out);
+	free(cd);
 
 	return 0;
 }
@@ -362,16 +366,16 @@ static int up_down_mixer_init(struct processing_module *mod)
 	struct up_down_mixer_data *cd;
 	int ret;
 
-	cd = rzalloc(SOF_MEM_ZONE_RUNTIME, 0, SOF_MEM_CAPS_RAM, sizeof(*cd));
+	cd = malloc(SOF_MEM_CAPS_RAM);
 	if (!cd) {
-		comp_free(dev);
+		//comp_free(dev);
 		return -ENOMEM;
 	}
 
 	mod_data->private = cd;
 
-	cd->buf_in = rballoc(0, SOF_MEM_CAPS_RAM, mod->priv.cfg.base_cfg.ibs);
-	cd->buf_out = rballoc(0, SOF_MEM_CAPS_RAM, mod->priv.cfg.base_cfg.obs);
+	cd->buf_in = malloc(mod->priv.cfg.base_cfg.ibs);
+	cd->buf_out = malloc(mod->priv.cfg.base_cfg.obs);
 	if (!cd->buf_in || !cd->buf_out) {
 		ret = -ENOMEM;
 		goto err;

@@ -5,7 +5,7 @@
 /*! \file native_system_service.h */
 #ifndef NATIVE_SYSTEM_SERVICE_H
 #define NATIVE_SYSTEM_SERVICE_H
-#include "logger.h"
+//#include "logger.h"
 #include "adsp_stddef.h"
 #include "adsp_error_code.h"
 #include <stdint.h>

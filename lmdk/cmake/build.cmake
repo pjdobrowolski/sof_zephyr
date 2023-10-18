@@ -35,9 +35,9 @@ foreach(MODULE ${MODULES_LIST})
 	)
 
 	target_link_options(${MODULE} PRIVATE
-		"-nostdlib" "-nodefaultlibs"
+#		"-nostdlib" "-nodefaultlibs" "-static-libgcc"
 		"-Wl,--no-undefined" "-Wl,--unresolved-symbols=report-all" "-Wl,--error-unresolved-symbols"
-		#"-Wl,--gc-sections"	# may remove .bss and that will result in rimage error, do not use for now
+		"-Wl,--gc-sections"	# may remove .bss and that will result in rimage error, do not use for now
 		"-Wl,-Map,$<TARGET_FILE:${MODULE}>.map"	# optional: just for debug
 		"-T" "${MODULE}_ldscripts/elf32xtensa.x"
 	)
