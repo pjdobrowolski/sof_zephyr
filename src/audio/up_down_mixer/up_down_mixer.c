@@ -14,6 +14,7 @@
 #include <errno.h>
 #include <sof/audio/module_adapter/library/native_system_service.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 // LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
 
