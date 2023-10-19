@@ -1,6 +1,7 @@
 
 MEMORY {
     HPSRAM_seg : org = ${HPSRAM}, len = 0xFFFFFFFF
+    noload : org = ${NOLOAD_BASE}, len = ${NOLOAD_SIZE}
 }
 
 PHDRS {

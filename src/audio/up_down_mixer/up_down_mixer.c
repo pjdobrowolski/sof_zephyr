@@ -40,6 +40,7 @@ struct sof_module_api_build_info udm_build_info __attribute__((section(".buildin
 
 extern struct module_interface up_down_mixer_interface;
 static struct native_system_service_api *system_service;
+uint32_t heap_mem[10] __attribute__((section(".heap_mem")));
 
 void *loadable_udm_entry_point(void *mod_cfg, void *parent_ppl, void **mod_ptr)
 {

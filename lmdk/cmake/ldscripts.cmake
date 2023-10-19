@@ -31,6 +31,14 @@ math(EXPR HPSRAM "${HPSRAM_ADDR} + 9 * 4096" OUTPUT_FORMAT HEXADECIMAL)
 set(LDSCRIPTS_DIR ${MODULE}_ldscripts)
 set(LDSCRIPT_FILE ${LDSCRIPTS_DIR}/elf32xtensa.x)
 
+# rimage module sections are C struct data, and thus flagged ALLOC.
+# The xcc linker demands they be in a declared memory region even if
+# the enclosing output section is (NOLOAD).  Put them here.
+#
+
+set(NOLOAD_BASE 0x20000)
+set(NOLOAD_SIZE 0x100000)
+
 file(MAKE_DIRECTORY ${LDSCRIPTS_DIR})
 file(WRITE ${LDSCRIPT_FILE} "")
 
@@ -42,8 +50,8 @@ configure_file(
 
 file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/text_linker_script.txt\n")
 file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/common_text_linker_script.txt\n")
-file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/data_linker_script.txt\n")
-file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/common_rodata_linker_script.txt\n")
 file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/bss_linker_script.txt\n")
+file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/common_rodata_linker_script.txt\n")
+file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/data_linker_script.txt\n")
 file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/xt_linker_script.txt\n")
 file(APPEND ${LDSCRIPT_FILE} "INCLUDE ${CMAKE_CURRENT_LIST_DIR}/ldscripts/guard_linker_script.txt\n")
