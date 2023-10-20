@@ -16,12 +16,12 @@
 #ifndef __SOF_AUDIO_COMPONENT_H__
 #define __SOF_AUDIO_COMPONENT_H__
 #include <sof/list.h>
+#include <sof/trace/trace.h>
 #ifndef MODULE_PRIVAT
 #include <sof/ipc/topology.h>
 #include <rtos/idc.h>
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
-#include <sof/trace/trace.h>
 #else
 #include <topology.h>
 #endif

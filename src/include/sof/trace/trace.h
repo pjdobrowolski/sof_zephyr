@@ -11,6 +11,7 @@
 #ifndef __SOF_TRACE_TRACE_H__
 #define __SOF_TRACE_TRACE_H__
 
+#if !MODULE_PRIVAT
 #ifndef RELATIVE_FILE
 #error "This file requires RELATIVE_FILE to be defined. " \
 	"Add it to CMake's target with sof_append_relative_path_definitions."
@@ -384,7 +385,7 @@ static inline int trace_filter_update(const struct trace_filter *filter)
  * DECLARE_TR_CTX, tr_ctx and component UUID system below
  */
 #define _TRACE_INV_CLASS	TRACE_CLASS_DEPRECATED
-
+#endif
 /**
  * Trace context.
  */
@@ -393,6 +394,7 @@ struct tr_ctx {
 	uint32_t level;				/**< Default log level */
 };
 
+#if !MODULE_PRIVAT
 #if defined(UNIT_TEST)
 #define TRACE_CONTEXT_SECTION
 #else
@@ -535,7 +537,7 @@ struct tr_ctx {
 static inline void mtrace_printf(int log_level, const char *format_str, ...)
 {
 };
-
+#endif
 #endif /* CONFIG_TRACE */
 
 #endif /* __SOF_TRACE_TRACE_H__ */
