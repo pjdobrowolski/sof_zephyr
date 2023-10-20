@@ -142,7 +142,7 @@ union ipc4_notification_header {
 
 		uint32_t _reserved_0 : 1;
 	} r;
-} __packed __aligned(4);
+} __attribute__((packed))  __attribute__((aligned(4)));
 
 /**
  * \brief This notification is reported by the Detector module upon key phrase detection.
@@ -176,7 +176,7 @@ struct ipc4_voice_cmd_notification {
 			uint32_t _reserved_2 : 2;
 		} r;
 	} extension;
-} __packed __aligned(4);
+} __attribute__((packed))  __attribute__((aligned(4)));
 
 /**
  * \brief This notification is reported by the Base FW when DSP core receive WDT timeout interrupt.
@@ -211,7 +211,7 @@ struct ipc4_watchdog_timeout_notification {
 			uint32_t _hw_rsvd_2 : 2;
 		} r;
 	} extension;
-} __packed __aligned(4);
+} __attribute__((packed))  __attribute__((aligned(4)));
 
 static inline void ipc4_notification_watchdog_init(struct ipc4_watchdog_timeout_notification *notif,
 						   uint32_t core_id, bool first_timeout)
@@ -254,4 +254,4 @@ struct ipc4_resource_event_data_notification {
 	uint32_t reserved0;
 	/* Detailed event data */
 	union ipc4_resource_event_data event_data;
-} __packed __aligned(8);
+} __attribute__((packed))  __attribute__((aligned(8)));

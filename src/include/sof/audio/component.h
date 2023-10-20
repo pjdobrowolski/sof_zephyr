@@ -16,11 +16,14 @@
 #ifndef __SOF_AUDIO_COMPONENT_H__
 #define __SOF_AUDIO_COMPONENT_H__
 #include <sof/list.h>
-#include <topology.h>
 #ifndef MODULE_PRIVAT
+#include <sof/ipc/topology.h>
 #include <rtos/idc.h>
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
+#include <sof/trace/trace.h>
+#else
+#include <topology.h>
 #endif
 #include <ipc/control.h>
 #include <kernel/abi.h>
@@ -555,13 +558,13 @@ struct comp_ipc_config {
  * - used by other component types.
  */
  
- /**
-  * Trace context.
-  */
-struct tr_ctx {
-	const struct sof_uuid_entry* uuid_p;	/**< UUID pointer, use SOF_UUID() to init */
-	uint32_t level;				/**< Default log level */
-};
+// /**
+//  * Trace context.
+//  */
+//struct tr_ctx {
+//	const struct sof_uuid_entry* uuid_p;	/**< UUID pointer, use SOF_UUID() to init */
+//	uint32_t level;				/**< Default log level */
+//};
 
 struct comp_dev {
 
