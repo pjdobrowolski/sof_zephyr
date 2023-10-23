@@ -92,6 +92,7 @@ static int modules_init(struct processing_module *mod)
 		comp_err(dev, "modules_init(): Failed to load manifest");
 		return -ENOMEM;
 	}
+	comp_info(mod->dev, "manifest loaded");
 	struct sof_man_module *module_entry =
 		    (struct sof_man_module *)((char *)desc + SOF_MAN_MODULE_OFFSET(0));
 
@@ -100,7 +101,7 @@ static int modules_init(struct processing_module *mod)
 		(module_entry->segment[SOF_MAN_SEGMENT_TEXT].v_base_addr);
 
 	void *mod_adp;
-
+	comp_info(mod->dev, "we'are checking if your not FDK");
 	/* Check if module is FDK*/
 	if (mod_buildinfo->api_version_number.fields.major < SOF_MODULE_API_MAJOR_VERSION) {
 		mod_adp = system_agent_start(md->module_entry_point, module_id,
@@ -111,6 +112,7 @@ static int modules_init(struct processing_module *mod)
 		mod_adp = native_system_agent_start(mod->sys_service, md->module_entry_point,
 						    module_id, instance_id, 0, log_handle,
 						    &mod_cfg);
+		comp_info(mod->dev, "greate success");
 	}
 
 	md->module_adapter = mod_adp;
@@ -122,7 +124,7 @@ static int modules_init(struct processing_module *mod)
 		return -ENOMEM;
 	}
 	md->mpd.in_buff_size = src_cfg->ibs;
-
+	comp_info(mod->dev, "buffers alloc");
 	md->mpd.out_buff = rballoc(0, SOF_MEM_CAPS_RAM, src_cfg->obs);
 	if (!md->mpd.out_buff) {
 		comp_err(dev, "modules_init(): Failed to alloc out_buff");
@@ -130,7 +132,7 @@ static int modules_init(struct processing_module *mod)
 		return -ENOMEM;
 	}
 	md->mpd.out_buff_size = src_cfg->obs;
-
+	comp_info(mod->dev, "I have all buffers");
 	/* Call module specific init function if exists. */
 	if (mod->is_native_sof) {
 		struct module_interface *mod_in =
@@ -141,6 +143,7 @@ static int modules_init(struct processing_module *mod)
 	} else {
 		ret = iadk_wrapper_init(md->module_adapter);
 	}
+	comp_info(mod->dev, "init is over");
 	return ret;
 }
 
