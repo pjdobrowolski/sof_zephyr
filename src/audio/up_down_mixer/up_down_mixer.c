@@ -41,11 +41,12 @@ struct sof_module_api_build_info udm_build_info __attribute__((section(".buildin
 
 extern struct module_interface up_down_mixer_interface;
 static struct native_system_service_api *system_service;
-uint32_t heap_mem[10] __attribute__((section(".heap_mem")));
+uint32_t heap_mem[2048] __attribute__((section(".heap_mem"))) __attribute__((aligned(4096)));
 
 void *loadable_udm_entry_point(void *mod_cfg, void *parent_ppl, void **mod_ptr)
 {
 	system_service = (struct native_system_service_api *)mod_cfg;
+
 	return &up_down_mixer_interface;
 }
 
@@ -359,6 +360,7 @@ static int up_down_mixer_free(struct processing_module *mod)
 	return 0;
 }
 
+__attribute((optimize("-O0")))
 static int up_down_mixer_init(struct processing_module *mod)
 {
 	struct module_config *dst = &mod->priv.cfg;
@@ -367,8 +369,10 @@ static int up_down_mixer_init(struct processing_module *mod)
 	struct comp_dev *dev = mod->dev;
 	struct up_down_mixer_data *cd;
 	int ret;
-
-	cd = malloc(SOF_MEM_CAPS_RAM);
+	//volatile int bomba = 1;
+	//while (bomba);
+	//cd = rzalloc(SOF_MEM_ZONE_RUNTIME, 0, SOF_MEM_CAPS_RAM, sizeof(*cd));
+	cd = malloc(sizeof(struct up_down_mixer_data));
 	if (!cd) {
 		//comp_free(dev);
 		return -ENOMEM;

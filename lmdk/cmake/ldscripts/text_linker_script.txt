@@ -12,6 +12,7 @@ SECTIONS {
     .text : ALIGN(4096) {
         _text_start = ABSOLUTE(.);
         *(.buildinfo)
+        KEEP(*(.buildinfo))
         *(.gnu.linkonce.literal.*)
         *(.gnu.linkonce.lit4)
         *(.literal)

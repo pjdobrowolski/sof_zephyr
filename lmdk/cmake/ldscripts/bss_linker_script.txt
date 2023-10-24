@@ -18,9 +18,9 @@ SECTIONS {
         *(.bss.*)
 
         . = ALIGN(4);
+        __stack = .;
         _end = .;
         KEEP(*(.heap_mem))
         _heap_sentry = .;
-        __stack = .;
     } >HPSRAM_seg : bss_phdr
 }

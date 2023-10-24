@@ -55,6 +55,7 @@ DECLARE_TR_CTX(intel_codec_tr, SOF_UUID(intel_uuid), LOG_LEVEL_INFO);
  * \return: zero on success
  *          error code on failure
  */
+__attribute((optimize("-O0")))
 static int modules_init(struct processing_module *mod)
 {
 	uint32_t module_entry_point;
@@ -102,6 +103,8 @@ static int modules_init(struct processing_module *mod)
 
 	void *mod_adp;
 	comp_info(mod->dev, "we'are checking if your not FDK");
+	volatile int bomba = 1;
+	while (bomba);
 	/* Check if module is FDK*/
 	if (mod_buildinfo->api_version_number.fields.major < SOF_MODULE_API_MAJOR_VERSION) {
 		mod_adp = system_agent_start(md->module_entry_point, module_id,
@@ -135,12 +138,16 @@ static int modules_init(struct processing_module *mod)
 	comp_info(mod->dev, "I have all buffers");
 	/* Call module specific init function if exists. */
 	if (mod->is_native_sof) {
+		comp_info(mod->dev, "module_interface: mod_in");
 		struct module_interface *mod_in =
 					(struct module_interface *)md->module_adapter;
 
 		ret = mod_in->init(mod);
+		comp_info(mod->dev, "module_interface: mod_in->init");
 		mod->priv.ops = mod_in;
+		comp_info(mod->dev, "module_interface: priv.ops");
 	} else {
+		comp_info(mod->dev, "iadk_wrapper_init: md->module_adapter");
 		ret = iadk_wrapper_init(md->module_adapter);
 	}
 	comp_info(mod->dev, "init is over");

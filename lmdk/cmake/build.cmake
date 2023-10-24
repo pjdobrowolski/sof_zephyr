@@ -22,6 +22,7 @@ foreach(MODULE ${MODULES_LIST})
 
 	# generate linker script
 	get_target_property(HPSRAM_ADDR ${MODULE} HPSRAM_ADDR)
+	target_compile_options(${MODULE} PUBLIC  "-g3")
 
 	if(NOT DEFINED HPSRAM_ADDR)
 		message(FATAL_ERROR "Please define HPSRAM_ADDR for module ${MODULE}")
