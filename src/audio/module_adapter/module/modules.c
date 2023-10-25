@@ -103,8 +103,8 @@ static int modules_init(struct processing_module *mod)
 
 	void *mod_adp;
 	comp_info(mod->dev, "we'are checking if your not FDK");
-	volatile int bomba = 1;
-	while (bomba);
+	//volatile int bomba = 1;
+	//while (bomba);
 	/* Check if module is FDK*/
 	if (mod_buildinfo->api_version_number.fields.major < SOF_MODULE_API_MAJOR_VERSION) {
 		mod_adp = system_agent_start(md->module_entry_point, module_id,
