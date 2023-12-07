@@ -401,36 +401,85 @@ err:
 
 static int
 up_down_mixer_process(struct processing_module *mod,
-		      struct input_stream_buffer *input_buffers, int num_input_buffers,
-		      struct output_stream_buffer *output_buffers, int num_output_buffers)
+		      struct input_stream_buffer **input_buffers, int num_input_buffers,
+		      struct output_stream_buffer **output_buffers, int num_output_buffers)
 {
 	struct up_down_mixer_data *cd = module_get_private_data(mod);
 	struct comp_dev *dev = mod->dev;
 	uint32_t source_bytes, sink_bytes;
 	uint32_t mix_frames;
 
+	size_t frames_processed, frames_to_process, i;
+	const uint8_t* input0_pos, * input0_start;
+	const uint8_t* input1_pos, * input1_start, * input1_end;
+	uint8_t* output_pos, * output_start;
+
 	comp_dbg(dev, "up_down_mixer_process()");
 
-	mix_frames = audio_stream_avail_frames(mod->input_buffers[0].data,
-					       mod->output_buffers[0].data);
+	/*  frames_to_process - zmienna gdzie znajduje sie liczba ramek jaka moze wyladowac w sinku
+Jezeli frames_to_process jest mniejsze od source_get_data_frames_available to znaczy ze
+ilosc ramek na wejsciu jest wieksza niz miejsca na wyjsciu i niemozemy przeprocesowac wiecej*/
+	frames_to_process = sink_get_free_frames(output_buffers[0]);
+	i = source_get_data_frames_available(input_buffers[0]);
+	if (i < frames_to_process)
+		frames_to_process = i;
 
-	source_bytes = mix_frames * audio_stream_frame_bytes(mod->input_buffers[0].data);
-	sink_bytes = mix_frames * audio_stream_frame_bytes(mod->output_buffers[0].data);
+	const unsigned int output_channels = sink_get_channels(output_buffers[0]);
+	const size_t output_frame_bytes = sink_get_frame_bytes(output_buffers[0]);
+	ret = sink_get_buffer(output_buffers[0], frames_to_process * output_frame_bytes, (void**)&output_pos,
+		(void**)&output_start, &i);
+	if (ret)
+		return ADSP_FATAL_FAILURE;
+	
+	const uint8_t* const output_end = output_start + i;
 
-	if (source_bytes) {
-		uint32_t sink_sample_bytes;
+	const unsigned int input0_channels = source_get_channels(input_buffers[0]);
+	const size_t input0_frame_bytes = source_get_frame_bytes(input_buffers[0]);
+	ret = source_get_data(input_buffers[0], frames_to_process * input0_frame_bytes,
+		(const void**)&input0_pos, (const void**)&input0_start, &i);
+	if (ret) {
+		sink_commit_buffer(sinks[0], 0);
+		return ADSP_FATAL_FAILURE;
+	}
 
-		audio_stream_copy_to_linear(mod->input_buffers[0].data, 0, cd->buf_in, 0,
-					    source_bytes /
-					    audio_stream_sample_bytes(mod->input_buffers[0].data));
+	const uint8_t* const input0_end = input0_start + i;
+
+	//mix_frames = audio_stream_avail_frames(mod->input_buffers[0].data,
+	//				       mod->output_buffers[0].data);
+
+	//source_bytes = mix_frames * audio_stream_frame_bytes(mod->input_buffers[0].data);
+	//sink_bytes = mix_frames * audio_stream_frame_bytes(mod->output_buffers[0].data);
+
+	frames_processed = 0;
+	while (frames_processed < frames_to_process) {
+		//uint32_t sink_sample_bytes;
+
+		//audio_stream_copy_to_linear(mod->input_buffers[0].data, 0, cd->buf_in, 0,
+		//			    source_bytes /
+		//			    audio_stream_sample_bytes(mod->input_buffers[0].data));
 
 		cd->mix_routine(cd, (uint8_t *)cd->buf_in, source_bytes, (uint8_t *)cd->buf_out);
 
-		sink_sample_bytes = audio_stream_sample_bytes(mod->output_buffers[0].data);
-		audio_stream_copy_from_linear(cd->buf_out, 0, mod->output_buffers[0].data, 0,
-					      sink_bytes / sink_sample_bytes);
-		mod->output_buffers[0].size = sink_bytes;
-		mod->input_buffers[0].consumed = source_bytes;
+		//sink_sample_bytes = audio_stream_sample_bytes(mod->output_buffers[0].data);
+		//audio_stream_copy_from_linear(cd->buf_out, 0, mod->output_buffers[0].data, 0,
+		//			      sink_bytes / sink_sample_bytes);
+		//mod->output_buffers[0].size = sink_bytes;
+		//mod->input_buffers[0].consumed = source_bytes;
+
+		input0_pos += input0_frame_bytes;
+		if (input0_pos >= input0_end)
+			input0_pos = input0_start;
+
+		/* Pointer value is ignored if input1_channels == 0 */
+		input1_pos += input1_frame_bytes;
+		if (input1_pos >= input1_end)
+			input1_pos = input1_start;
+
+		output_pos += output_frame_bytes;
+		if (output_pos >= output_end)
+			output_pos = output_start;
+
+		frames_processed++;
 	}
 
 	return 0;

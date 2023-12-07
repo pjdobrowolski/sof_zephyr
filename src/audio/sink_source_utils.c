@@ -71,3 +71,11 @@ int source_to_sink_copy(struct sof_source *source,
 	sink_commit_buffer(sink, INT_MAX);
 	return 0;
 }
+
+void cir_buf_to_linear_copy(const sof_source *source, int ioffset,
+							void* linear_sink, int ooffset, unsigned int samples)
+{
+	int fsize = source_get_frame_bytes(source[0]);
+	//if(source > source->)
+
+}
