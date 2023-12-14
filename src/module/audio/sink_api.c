@@ -24,7 +24,7 @@ int sink_get_buffer(struct sof_sink *sink, size_t req_size,
 	return ret;
 }
 
-int sink_commit_buffer(struct sof_sink *sink, size_t commit_size)
+__attribute__((optimize("-O0"))) int sink_commit_buffer(struct sof_sink *sink, size_t commit_size)
 {
 	int ret;
 

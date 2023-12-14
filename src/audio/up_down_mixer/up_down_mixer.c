@@ -399,20 +399,23 @@ err:
 	return ret;
 }
 
-static int
+__attribute__((optimize("-O0"))) static int
 up_down_mixer_process(struct processing_module *mod,
-		      struct input_stream_buffer **input_buffers, int num_input_buffers,
-		      struct output_stream_buffer **output_buffers, int num_output_buffers)
+		      struct sof_source **input_buffers, int num_input_buffers,
+		      struct sof_sink **output_buffers, int num_output_buffers)
 {
 	struct up_down_mixer_data *cd = module_get_private_data(mod);
 	struct comp_dev *dev = mod->dev;
 	uint32_t source_bytes, sink_bytes;
 	uint32_t mix_frames;
 
-	size_t frames_processed, frames_to_process, i;
+	size_t frames_processed, frames_to_process, i, ret;
 	const uint8_t* input0_pos, * input0_start;
 	const uint8_t* input1_pos, * input1_start, * input1_end;
 	uint8_t* output_pos, * output_start;
+
+	volatile uint8_t bomba = 0;
+	while(bomba);
 
 	comp_dbg(dev, "up_down_mixer_process()");
 
@@ -429,7 +432,7 @@ ilosc ramek na wejsciu jest wieksza niz miejsca na wyjsciu i niemozemy przeproce
 	ret = sink_get_buffer(output_buffers[0], frames_to_process * output_frame_bytes, (void**)&output_pos,
 		(void**)&output_start, &i);
 	if (ret)
-		return ADSP_FATAL_FAILURE;
+		return -ENOMEM;
 	
 	const uint8_t* const output_end = output_start + i;
 
@@ -438,8 +441,8 @@ ilosc ramek na wejsciu jest wieksza niz miejsca na wyjsciu i niemozemy przeproce
 	ret = source_get_data(input_buffers[0], frames_to_process * input0_frame_bytes,
 		(const void**)&input0_pos, (const void**)&input0_start, &i);
 	if (ret) {
-		sink_commit_buffer(sinks[0], 0);
-		return ADSP_FATAL_FAILURE;
+		sink_commit_buffer(output_buffers[0], 0);
+		return -ENOMEM;
 	}
 
 	const uint8_t* const input0_end = input0_start + i;
@@ -451,43 +454,73 @@ ilosc ramek na wejsciu jest wieksza niz miejsca na wyjsciu i niemozemy przeproce
 	//sink_bytes = mix_frames * audio_stream_frame_bytes(mod->output_buffers[0].data);
 
 	frames_processed = 0;
-	while (frames_processed < frames_to_process) {
-		//uint32_t sink_sample_bytes;
+//while (frames_processed < frames_to_process) {
+	//while (frames_to_process) {
+	//	//uint32_t sink_sample_bytes;
 
-		//audio_stream_copy_to_linear(mod->input_buffers[0].data, 0, cd->buf_in, 0,
-		//			    source_bytes /
-		//			    audio_stream_sample_bytes(mod->input_buffers[0].data));
+	//	//audio_stream_copy_to_linear(mod->input_buffers[0].data, 0, cd->buf_in, 0,
+	//	//			    source_bytes /
+	//	//			    audio_stream_sample_bytes(mod->input_buffers[0].data));
+	//	
+	//	// wiekosc ramki
+	//	int ssize = input0_frame_bytes; /* src fmt == sink fmt */
+	//	// pozycja zrodla o ile jest na pozycji 0
+	//	uint8_t* src = input0_pos;
+	//	// jezeli pozycja zrodla nie jest na poczatku(pozycja 0 buffora), to ustawiamy
+	//	// pozycje zrodla na poczatek buforu wejsciowego
+	//	if (input0_pos > input0_start) src = input0_start;
 
-		cd->mix_routine(cd, (uint8_t *)cd->buf_in, source_bytes, (uint8_t *)cd->buf_out);
+	//	// cel bufforu ustawiamy na adres startowy celu
+	//	uint8_t* snk = cd->buf_in;
+	//	// ustawiamy ilosc ramek do przekopiowania
+	//	size_t bytes = samples * ssize; //tu bedzie frames_to_buffer
+	//	// licznik bytes do przekrecenia sie bufforu source
+	//	size_t bytes_src; //tu bedzie frames_to_process
+	//	// tu mamy licznik ramek skopiowanych
+	//	size_t bytes_copied;
+
+	//	while (frames_processed < frames_to_process) {
+
+	//		bytes_src = input;
+	//		bytes_copied = MIN(bytes, bytes_src);
+	//		memcpy(snk, src, bytes_copied);
+	//		bytes -= bytes_copied;
+	//		src = audio_stream_wrap(source, src + bytes_copied);
+	//		snk += bytes_copied;
+	//		frames_to_process++;
+
+	//		input0_pos += input0_frame_bytes;
+	//		if (input0_pos >= input0_end)
+	//			input0_pos = input0_start;
+
+	//		output_pos += output_frame_bytes;
+	//		if (output_pos >= output_end)
+	//			output_pos = output_start;
+
+	//		frames_processed++;
+	//	}
+	// (in_data, in_data_size, out_data)
+		cd->mix_routine(cd, (const void*)input0_start, input0_channels * frames_to_process * input0_frame_bytes, (void*)output_start);
 
 		//sink_sample_bytes = audio_stream_sample_bytes(mod->output_buffers[0].data);
 		//audio_stream_copy_from_linear(cd->buf_out, 0, mod->output_buffers[0].data, 0,
 		//			      sink_bytes / sink_sample_bytes);
 		//mod->output_buffers[0].size = sink_bytes;
 		//mod->input_buffers[0].consumed = source_bytes;
-
-		input0_pos += input0_frame_bytes;
-		if (input0_pos >= input0_end)
-			input0_pos = input0_start;
-
-		/* Pointer value is ignored if input1_channels == 0 */
-		input1_pos += input1_frame_bytes;
-		if (input1_pos >= input1_end)
-			input1_pos = input1_start;
-
-		output_pos += output_frame_bytes;
-		if (output_pos >= output_end)
-			output_pos = output_start;
-
-		frames_processed++;
-	}
-
+	//	frames_processed++;
+	//}
+	ret = source_release_data(input_buffers[0], frames_to_process * input0_frame_bytes);
+	if (ret)
+		return ret;
+	ret = sink_commit_buffer(output_buffers[0], frames_to_process * output_frame_bytes);
+	if (ret)
+		return ret;
 	return 0;
 }
 
 static const struct module_interface up_down_mixer_interface = {
 	.init = up_down_mixer_init,
-	.process_audio_stream = up_down_mixer_process,
+	.process = up_down_mixer_process,
 	.free = up_down_mixer_free
 };
 

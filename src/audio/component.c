@@ -303,20 +303,33 @@ void audio_stream_copy_from_linear(const void *linear_source, int ioffset,
 void audio_stream_copy_to_linear(const struct audio_stream *source, int ioffset,
 				 void *linear_sink, int ooffset, unsigned int samples)
 {
+	// kalkuluje wielkosc sampla
 	int ssize = audio_stream_sample_bytes(source); /* src fmt == sink fmt */
+	// tworzy wskaznik na zrodlo, jezeli zrodlo jest dalej niz koniec buforu to go przerzuca na poczatek + 1 
 	uint8_t *src = audio_stream_wrap(source, (uint8_t *)audio_stream_get_rptr(source) +
 					 ioffset * ssize);
+	// tworzy wskaznik na ujscie
 	uint8_t *snk = (uint8_t *)linear_sink + ooffset * ssize;
+	// kalkuluje ilosc wszystkich byte'ow do przeprocesowania
 	size_t bytes = samples * ssize;
+	// zmienna zawierajaca ilosc bajtow do konca bufforu do przetworzenia
 	size_t bytes_src;
+	// zmienna z danymi skopiowanymi juz
 	size_t bytes_copied;
 
+	// warunek, puki bajty sa, to kopiujemy
 	while (bytes) {
+		// przelicza ilosc bajtow do konca bufforu bez przekrecania
 		bytes_src = audio_stream_bytes_without_wrap(source, src);
+		// jezeli bytes jest mniej niz bytes_src, to bytes_copied = bytes w odwrotnym kierunku to bytes_copied = bytes_src
 		bytes_copied = MIN(bytes, bytes_src);
+		// kopiujemy do snk z src, butes_copied
 		memcpy(snk, src, bytes_copied);
+		// bytes umniejszamy o bytes_copied
 		bytes -= bytes_copied;
+		// jezeli src+bytes_copied jest wieksze od source to nowy wskaznik na src to....tu sie krwa dzieje cos dziwnego
 		src = audio_stream_wrap(source, src + bytes_copied);
+		// przesywamy ujscie o bajdy skopiowane
 		snk += bytes_copied;
 	}
 }

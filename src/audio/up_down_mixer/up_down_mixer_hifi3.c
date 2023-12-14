@@ -223,7 +223,7 @@ void shiftcopy32bit_stereo(struct up_down_mixer_data *cd, const uint8_t * const 
 		out_ptr[i] = in_ptr[i];
 }
 
-void downmix32bit_2_1(struct up_down_mixer_data *cd, const uint8_t * const in_data,
+__attribute__((optimize("-O0"))) void downmix32bit_2_1(struct up_down_mixer_data *cd, const uint8_t * const in_data,
 		      const uint32_t in_size, uint8_t * const out_data)
 {
 	ae_int32x2 P_coefficient_left_right;
@@ -1276,7 +1276,7 @@ void downmix16bit_4ch_mono(struct up_down_mixer_data *cd, const uint8_t * const 
 	}
 }
 
-void downmix32bit_stereo(struct up_down_mixer_data *cd, const uint8_t * const in_data,
+__attribute__((optimize("-O0"))) void downmix32bit_stereo(struct up_down_mixer_data *cd, const uint8_t * const in_data,
 			 const uint32_t in_size, uint8_t * const out_data)
 {
 	uint32_t i;

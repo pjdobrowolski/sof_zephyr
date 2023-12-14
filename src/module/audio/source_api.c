@@ -24,7 +24,7 @@ int source_get_data(struct sof_source *source, size_t req_size,
 	return ret;
 }
 
-int source_release_data(struct sof_source *source, size_t free_size)
+__attribute__((optimize("-O0"))) int source_release_data(struct sof_source *source, size_t free_size)
 {
 	int ret;
 
