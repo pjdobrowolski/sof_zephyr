@@ -5,39 +5,31 @@
 // Author: Bartosz Kokoszko <bartoszx.kokoszko@intel.com>
 // Author: Adrian Bonislawski <adrian.bonislawski@intel.com>
 
-#include <sof/audio/buffer.h>
-#include <sof/audio/format.h>
 #include <sof/audio/module_adapter/module/generic.h>
-#include <sof/audio/pipeline.h>
-#include <rtos/panic.h>
-#include <sof/ipc/msg.h>
-#include <rtos/alloc.h>
-#include <rtos/cache.h>
-#include <rtos/init.h>
-#include <sof/lib/memory.h>
-#include <sof/lib/notifier.h>
-#include <sof/lib/uuid.h>
-#include <sof/list.h>
-#include <rtos/string.h>
-#include <sof/ut.h>
-#include <sof/trace/trace.h>
-#include <user/trace.h>
-#include <errno.h>
-#include <stddef.h>
-#include <stdint.h>
+#include <module/module/base.h>
+#include <module/module/api_ver.h>
+#include <rimage/sof/user/manifest.h>
+#include <module/audio/source_api.h>
+#include <module/audio/sink_api.h>
 
 #include "up_down_mixer_coef.h"
 #include "up_down_mixer.h"
 
-LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
+//LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
+//
+///* these ids aligns windows driver requirement to support windows driver */
+///* 42f8060c-832f-4dbf-b247-51e961997b34 */
+//DECLARE_SOF_RT_UUID("up_down_mixer", up_down_mixer_comp_uuid, 0x42f8060c, 0x832f,
+//		    0x4dbf, 0xb2, 0x47, 0x51, 0xe9, 0x61, 0x99, 0x7b, 0x34);
+//
+//DECLARE_TR_CTX(up_down_mixer_comp_tr, SOF_UUID(up_down_mixer_comp_uuid),
+//	       LOG_LEVEL_INFO);
 
-/* these ids aligns windows driver requirement to support windows driver */
-/* 42f8060c-832f-4dbf-b247-51e961997b34 */
-DECLARE_SOF_RT_UUID("up_down_mixer", up_down_mixer_comp_uuid, 0x42f8060c, 0x832f,
-		    0x4dbf, 0xb2, 0x47, 0x51, 0xe9, 0x61, 0x99, 0x7b, 0x34);
+/* Logging is temporary disabled */
+#define comp_err(...)
+#define comp_dbg(...)
 
-DECLARE_TR_CTX(up_down_mixer_comp_tr, SOF_UUID(up_down_mixer_comp_uuid),
-	       LOG_LEVEL_INFO);
+static const struct native_system_agent* native_sys_agent;
 
 int32_t custom_coeffs[UP_DOWN_MIX_COEFFS_LENGTH];
 
@@ -451,5 +443,24 @@ static const struct module_interface up_down_mixer_interface = {
 	.free = up_down_mixer_free
 };
 
-DECLARE_MODULE_ADAPTER(up_down_mixer_interface, up_down_mixer_comp_uuid, up_down_mixer_comp_tr);
-SOF_MODULE_INIT(up_down_mixer, sys_comp_module_up_down_mixer_interface_init);
+DECLARE_LOADABLE_MODULE_API_VERSION(udm);
+
+static void* entry_point(void* mod_cfg, void* parent_ppl, void** mod_ptr)
+{
+	native_sys_agent = *(const struct native_system_agent**)mod_ptr;
+
+	return &up_down_mixer_interface;
+}
+
+__attribute__((section(".module")))
+const struct sof_man_module_manifest udm_manifest = {
+	.module = {
+		.name = "UPDWMIX",
+		.uuid = {0x12, 0x34, 0xf1, 0xf1, 0x12, 0x34, 0x1a, 0x34,
+			 0x8c, 0x08, 0x88, 0x4b, 0xe5, 0xd1, 0x4f, 0xaa},
+		.entry_point = (uint32_t)entry_point,
+		.type = {.load_type = SOF_MAN_MOD_TYPE_MODULE,
+		.domain_ll = 1 },
+		.affinity_mask = 1,
+	}
+};
