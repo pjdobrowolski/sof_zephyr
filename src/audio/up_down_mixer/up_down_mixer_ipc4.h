@@ -27,7 +27,9 @@ enum up_down_mix_coeff_select {
 
 #define UP_DOWN_MIX_COEFFS_LENGTH       8
 #define IPC4_UP_DOWN_MIXER_MODULE_OUTPUT_PINS_COUNT	1
-
+#ifndef __packed
+#define __packed __attribute__((packed))
+#endif
 struct ipc4_up_down_mixer_module_cfg {
 	struct ipc4_base_module_cfg base_cfg;
 

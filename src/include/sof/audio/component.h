@@ -23,18 +23,56 @@
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
 #include <ipc/control.h>
-#else
 #include <sof/ipc/topology.h>
 #endif
 #include <kernel/abi.h>
-
+#include <stdbool.h>
+#include <stdint.h>
 #include <limits.h>
-
+#include <sof/list.h>
 struct comp_dev;
 struct sof_ipc_stream_posn;
 struct dai_hw_params;
 struct timestamp_data;
 struct dai_ts_data;
+
+/* types of component */
+enum sof_comp_type {
+	SOF_COMP_NONE = 0,
+	SOF_COMP_HOST,
+	SOF_COMP_DAI,
+	SOF_COMP_SG_HOST,	/**< scatter gather variant */
+	SOF_COMP_SG_DAI,	/**< scatter gather variant */
+	SOF_COMP_VOLUME,
+	SOF_COMP_MIXER,
+	SOF_COMP_MUX,
+	SOF_COMP_SRC,
+	SOF_COMP_DEPRECATED0, /* Formerly SOF_COMP_SPLITTER */
+	SOF_COMP_TONE,
+	SOF_COMP_DEPRECATED1, /* Formerly SOF_COMP_SWITCH */
+	SOF_COMP_BUFFER,
+	SOF_COMP_EQ_IIR,
+	SOF_COMP_EQ_FIR,
+	SOF_COMP_KEYWORD_DETECT,
+	SOF_COMP_KPB,			/* A key phrase buffer component */
+	SOF_COMP_SELECTOR,		/**< channel selector component */
+	SOF_COMP_DEMUX,
+	SOF_COMP_ASRC,		/**< Asynchronous sample rate converter */
+	SOF_COMP_DCBLOCK,
+	SOF_COMP_SMART_AMP,		/**< smart amplifier component */
+	SOF_COMP_MODULE_ADAPTER,		/**< module adapter */
+	/* keep FILEREAD/FILEWRITE as the last ones */
+	SOF_COMP_FILEREAD = 10000,	/**< host test based file IO */
+	SOF_COMP_FILEWRITE = 10001,	/**< host test based file IO */
+};
+
+/**
+ * Trace context.
+ */
+struct tr_ctx {
+	const struct sof_uuid_entry* uuid_p;	/**< UUID pointer, use SOF_UUID() to init */
+	uint32_t level;				/**< Default log level */
+};
 
 /** \addtogroup component_api Component API
  *  @{

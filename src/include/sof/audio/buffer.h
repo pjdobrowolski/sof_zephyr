@@ -7,7 +7,7 @@
 
 #ifndef __SOF_AUDIO_BUFFER_H__
 #define __SOF_AUDIO_BUFFER_H__
-
+#ifndef MODULE_PRIVAT
 #include <sof/audio/audio_stream.h>
 #include <sof/audio/pipeline.h>
 #include <sof/math/numbers.h>
@@ -26,7 +26,7 @@
 #include <ipc/topology.h>
 #include <user/trace.h>
 #include <sof/audio/format.h>
-
+#endif
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>

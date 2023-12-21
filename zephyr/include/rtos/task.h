@@ -7,13 +7,16 @@
 
 #ifndef __ZEPHYR_RTOS_TASK_H__
 #define __ZEPHYR_RTOS_TASK_H__
-
+#ifndef MODULE_PRIVAT
 #include <rtos/panic.h>
+#endif
 #include <sof/list.h>
 #include <stdbool.h>
 #include <stdint.h>
+#ifndef MODULE_PRIVAT
 #include <rtos/kernel.h>
 #include <sof/lib/perf_cnt.h>
+#endif
 
 struct comp_dev;
 struct sof;

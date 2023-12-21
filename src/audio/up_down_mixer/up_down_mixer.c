@@ -15,21 +15,17 @@
 #include "up_down_mixer_coef.h"
 #include "up_down_mixer.h"
 
-//LOG_MODULE_REGISTER(up_down_mixer, CONFIG_SOF_LOG_LEVEL);
-//
-///* these ids aligns windows driver requirement to support windows driver */
-///* 42f8060c-832f-4dbf-b247-51e961997b34 */
-//DECLARE_SOF_RT_UUID("up_down_mixer", up_down_mixer_comp_uuid, 0x42f8060c, 0x832f,
-//		    0x4dbf, 0xb2, 0x47, 0x51, 0xe9, 0x61, 0x99, 0x7b, 0x34);
-//
-//DECLARE_TR_CTX(up_down_mixer_comp_tr, SOF_UUID(up_down_mixer_comp_uuid),
-//	       LOG_LEVEL_INFO);
+#include <errno.h>
+#include <sof/audio/module_adapter/library/native_system_service.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 /* Logging is temporary disabled */
 #define comp_err(...)
 #define comp_dbg(...)
 
-static const struct native_system_agent* native_sys_agent;
+static struct native_system_service_api* system_service;
+uint32_t heap_mem[2048] __attribute__((section(".heap_mem"))) __attribute__((aligned(4096)));
 
 int32_t custom_coeffs[UP_DOWN_MIX_COEFFS_LENGTH];
 
@@ -43,7 +39,7 @@ static int set_downmix_coefficients(struct processing_module *mod,
 	int ret;
 
 	if (cd->downmix_coefficients) {
-		ret = memcpy_s(&custom_coeffs, sizeof(custom_coeffs), downmix_coefficients,
+		ret = system_service->safe_memcpy(&custom_coeffs, sizeof(custom_coeffs), downmix_coefficients,
 			       sizeof(int32_t) * UP_DOWN_MIX_COEFFS_LENGTH);
 
 		if (ret < 0)
@@ -321,9 +317,9 @@ static int up_down_mixer_free(struct processing_module *mod)
 {
 	struct up_down_mixer_data *cd = module_get_private_data(mod);
 
-	rfree(cd->buf_in);
-	rfree(cd->buf_out);
-	rfree(cd);
+	free(cd->buf_in);
+	free(cd->buf_out);
+	free(cd);
 
 	return 0;
 }
@@ -337,16 +333,16 @@ static int up_down_mixer_init(struct processing_module *mod)
 	struct up_down_mixer_data *cd;
 	int ret;
 
-	cd = rzalloc(SOF_MEM_ZONE_RUNTIME, 0, SOF_MEM_CAPS_RAM, sizeof(*cd));
+	cd = malloc(sizeof(struct up_down_mixer_data));
 	if (!cd) {
-		comp_free(dev);
+		free(dev);
 		return -ENOMEM;
 	}
 
 	mod_data->private = cd;
 
-	cd->buf_in = rballoc(0, SOF_MEM_CAPS_RAM, mod->priv.cfg.base_cfg.ibs);
-	cd->buf_out = rballoc(0, SOF_MEM_CAPS_RAM, mod->priv.cfg.base_cfg.obs);
+	cd->buf_in = malloc(mod->priv.cfg.base_cfg.ibs);
+	cd->buf_out = malloc(mod->priv.cfg.base_cfg.obs);
 	if (!cd->buf_in || !cd->buf_out) {
 		ret = -ENOMEM;
 		goto err;
@@ -447,7 +443,7 @@ DECLARE_LOADABLE_MODULE_API_VERSION(udm);
 
 static void* entry_point(void* mod_cfg, void* parent_ppl, void** mod_ptr)
 {
-	native_sys_agent = *(const struct native_system_agent**)mod_ptr;
+	system_service = *(const struct native_system_agent**)mod_ptr;
 
 	return &up_down_mixer_interface;
 }

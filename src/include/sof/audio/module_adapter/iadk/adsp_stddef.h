@@ -11,8 +11,10 @@
 #include <user/trace.h>
 #include <rtos/string.h>
 
-#ifdef __ZEPHYR__ && !defined MODULE_PRIVAT
+#ifdef __ZEPHYR__
+#ifndef MODULE_PRIVAT
 #include <zephyr/sys/util.h>
+#endif
 #endif /* __ZEPHYR__ */
 
 #ifdef __XTENSA__

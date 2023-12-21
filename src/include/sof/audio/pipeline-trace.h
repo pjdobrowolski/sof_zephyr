@@ -7,11 +7,12 @@
 
 #ifndef __SOF_AUDIO_PIPELINE_TRACE_H__
 #define __SOF_AUDIO_PIPELINE_TRACE_H__
-
+#ifndef MODULE_PRIVAT
 #include <rtos/sof.h>
 #include <sof/trace/trace.h>
 #include <user/trace.h>
 #include <errno.h>
+#endif
 #include <stdbool.h>
 #include <stdint.h>
 

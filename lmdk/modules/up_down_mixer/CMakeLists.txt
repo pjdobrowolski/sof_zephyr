@@ -12,7 +12,8 @@ target_compile_definitions(up_down_mixer PRIVATE __ZEPHYR__=1
 												 CONFIG_IPC_MAJOR_4=1
 												 CONFIG_LIBRARY=1
 												 __ZEPHYR_RTOS_IDC_H__=1
-												 MODULE_PRIVAT=1)
+												 MODULE_PRIVAT=1
+												 XCHAL_HAVE_HIFI3=1)
 
 												 message( ${LMDK_DIR}${SOF_SRC_DIR}../posix/include )
 

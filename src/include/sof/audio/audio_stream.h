@@ -20,8 +20,10 @@
 #include <sof/compiler_attributes.h>
 #include <rtos/panic.h>
 #include <sof/math/numbers.h>
+#ifndef MODULE_PRIVAT
 #include <rtos/alloc.h>
 #include <rtos/cache.h>
+#endif
 #include <ipc/stream.h>
 #include <ipc4/base-config.h>
 #include <module/audio/audio_stream.h>

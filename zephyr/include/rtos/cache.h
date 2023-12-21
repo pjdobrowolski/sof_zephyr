@@ -9,10 +9,10 @@
 #define __SOF_LIB_CACHE_H__
 
 #if !defined(__ASSEMBLER__) && !defined(LINKER)
-
+#ifndef MODULE_PRIVAT
 #include <zephyr/cache.h>
 #include <zephyr/debug/sparse.h>
-
+#endif
 #if defined(CONFIG_XTENSA) && defined(CONFIG_INTEL)
 
 /* definitions required by xtensa-based Intel platforms.

@@ -8,9 +8,9 @@
 
 #ifndef __ZEPHYR_RTOS_PANIC_H__
 #define __ZEPHYR_RTOS_PANIC_H__
-
+#ifndef MODULE_PRIVAT
 #include <rtos/kernel.h>
-
+#endif
 #ifndef __ZEPHYR__
 #error "This file should only be included in Zephyr builds."
 #endif /* __ZEPHYR__ */

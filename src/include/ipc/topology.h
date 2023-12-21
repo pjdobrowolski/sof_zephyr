@@ -77,6 +77,8 @@ struct sof_ipc_comp {
 /*
  * SOF memory capabilities, add new ones at the end
  */
+#define BIT(b)                       (1UL << (b))
+
 #define SOF_MEM_CAPS_RAM		BIT(0)
 #define SOF_MEM_CAPS_ROM		BIT(1)
 #define SOF_MEM_CAPS_EXT		BIT(2) /**< external */

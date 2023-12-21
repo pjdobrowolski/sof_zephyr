@@ -5,12 +5,12 @@
 
 #ifndef __ZEPHYR_RTOS_ALLOC_H__
 #define __ZEPHYR_RTOS_ALLOC_H__
-
+#ifndef MODULE_PRIVAT
 #include <rtos/bit.h>
 #include <rtos/string.h>
 #include <sof/trace/trace.h>
 #include <user/trace.h>
-
+#endif
 #include <stddef.h>
 #include <stdint.h>
 

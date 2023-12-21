@@ -7,9 +7,9 @@
 
 #ifndef __ZEPHYR_RTOS_BIT_H__
 #define __ZEPHYR_RTOS_BIT_H__
-
+#ifndef MODULE_PRIVAT
 #include <zephyr/sys/util.h>
-
+#endif
 /* TODO: align with Zephyr BIT APIs */
 
 #define MASK(b_hi, b_lo)	\

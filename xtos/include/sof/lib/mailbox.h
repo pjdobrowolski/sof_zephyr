@@ -12,8 +12,10 @@
 #include <sof/common.h>
 #include <kernel/mailbox.h>
 #include <platform/lib/mailbox.h>
+#ifndef MODULE_PRIVAT
 #include <rtos/panic.h>
 #include <rtos/cache.h>
+#endif
 #include <sof/lib/memory.h>
 #include <rtos/string.h>
 #include <stddef.h>
