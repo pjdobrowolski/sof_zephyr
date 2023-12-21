@@ -7,8 +7,9 @@
 
 #ifndef __SOF_MODULE_INTERFACE__
 #define __SOF_MODULE_INTERFACE__
-
+#ifndef MODULE_PRIVAT
 #include <sof/compiler_attributes.h>
+#endif
 #include <sof/audio/sink_api.h>
 #include <sof/audio/source_api.h>
 

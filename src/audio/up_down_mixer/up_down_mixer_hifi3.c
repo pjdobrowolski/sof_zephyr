@@ -6,7 +6,7 @@
 
 #include "up_down_mixer.h"
 
-#if defined(__XCC__) && XCHAL_HAVE_HIFI3
+#if defined(__XCC__) && XCHAL_HAVE_HIFI3 || ~defined MODULE_PRIVAT
 
 #include <xtensa/tie/xt_hifi3.h>
 #include <errno.h>

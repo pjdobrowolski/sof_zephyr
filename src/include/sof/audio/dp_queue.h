@@ -9,12 +9,13 @@
 
 #include <sof/audio/sink_api.h>
 #include <sof/audio/source_api.h>
+#ifndef MODULE_PRIVAT
 #include <sof/audio/audio_stream.h>
 #include <rtos/bit.h>
 #include <sof/common.h>
 #include <ipc/topology.h>
 #include <sof/coherent.h>
-
+#endif
 /**
  * DP queue is a lockless circular buffer
  * providing safe consumer/producer cached operations cross cores

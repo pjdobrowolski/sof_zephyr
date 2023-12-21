@@ -15,7 +15,7 @@
 
 #ifndef __SOF_AUDIO_COMPONENT_H__
 #define __SOF_AUDIO_COMPONENT_H__
-
+#ifndef MODULE_PRIVAT
 #include <sof/audio/buffer.h>
 #include <sof/audio/format.h>
 #include <sof/audio/pipeline.h>
@@ -23,7 +23,9 @@
 #include <sof/lib/dai.h>
 #include <sof/schedule/schedule.h>
 #include <ipc/control.h>
+#else
 #include <sof/ipc/topology.h>
+#endif
 #include <kernel/abi.h>
 
 #include <limits.h>
@@ -118,7 +120,7 @@ enum {
 #define COMP_ATTR_VDMA_INDEX	3	/**< Comp index of the virtual DMA at the gateway. */
 #define COMP_ATTR_BASE_CONFIG	4	/**< Component base config */
 /** @}*/
-
+#ifndef MODULE_PRIVAT
 /** \name Trace macros
  *  @{
  */
@@ -244,7 +246,7 @@ enum {
 		  (uint32_t)((pcd)->peak_mcps_period_cnt))
 
 /** @}*/
-
+#endif
 /** \brief Type of endpoint this component is connected to in a pipeline */
 enum comp_endpoint_type {
 	COMP_ENDPOINT_HOST,	/**< Connected to host dma */
@@ -294,7 +296,7 @@ struct comp_ops {
 	struct comp_dev *(*create)(const struct comp_driver *drv,
 				   const struct comp_ipc_config *ipc_config,
 				   const void *ipc_specific_config);
-
+#ifndef MODULE_PRIVAT
 	/**
 	 * Called to delete the specified component device.
 	 * @param dev Component device to be deleted.
@@ -510,6 +512,7 @@ struct comp_ops {
 	 * @return total data processed if succeeded, 0 otherwise.
 	 */
 	uint64_t (*get_total_data_processed)(struct comp_dev *dev, uint32_t stream_no, bool input);
+#endif //MODULE_PRIVAT
 };
 
 /**
@@ -646,7 +649,7 @@ static inline enum sof_comp_type dev_comp_type(const struct comp_dev *dev)
 {
 	return dev->ipc_config.type;
 }
-
+#ifndef MODULE_PRIVAT
 /**
  * Allocates memory for the component device and initializes common part.
  * @param drv Parent component driver.
@@ -907,5 +910,5 @@ int comp_verify_params(struct comp_dev *dev, uint32_t flag,
 		       struct sof_ipc_stream_params *params);
 
 /** @}*/
-
+#endif // MODULE_PRIVAT
 #endif /* __SOF_AUDIO_COMPONENT_H__ */

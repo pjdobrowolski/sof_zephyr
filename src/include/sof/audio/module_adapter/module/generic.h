@@ -13,14 +13,20 @@
 #ifndef __SOF_AUDIO_MODULE_GENERIC__
 #define __SOF_AUDIO_MODULE_GENERIC__
 
+#ifndef MODULE_PRIVAT
 #include <sof/audio/component.h>
 #include <sof/ut.h>
 #include <sof/lib/memory.h>
+#endif //MODULE_PRIVAT
 #include <sof/audio/sink_api.h>
 #include <sof/audio/source_api.h>
 #include <sof/audio/dp_queue.h>
 #include "module_interface.h"
-
+#ifndef MODULE_PRIVAT
+#if CONFIG_INTEL_MODULES
+#include "modules.h"
+#endif
+#endif
 /*
  * helpers to determine processing type
  * Needed till all the modules use PROCESSING_MODE_SINK_SOURCE
