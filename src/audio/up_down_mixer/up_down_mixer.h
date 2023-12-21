@@ -7,12 +7,16 @@
 
 #ifndef __SOF_AUDIO_UP_DOWN_MIXER_H__
 #define __SOF_AUDIO_UP_DOWN_MIXER_H__
-
+#ifndef MODULE_PRIVAT
 #include <sof/audio/component_ext.h>
-#include <sof/audio/ipc-config.h>
 #include <sof/common.h>
+#endif
+#include <sof/audio/ipc-config.h>
+
 #include <ipc/stream.h>
+#ifndef MODULE_PRIVAT
 #include <ipc4/module.h>
+#endif
 #include <ipc4/base-config.h>
 #include <stddef.h>
 #include <stdint.h>

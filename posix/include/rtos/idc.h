@@ -13,12 +13,13 @@
 
 #ifndef __POSIX_RTOS_IDC_H__
 #define __POSIX_RTOS_IDC_H__
-
+#ifndef MODULE_PRIVAT
 #include <arch/drivers/idc.h>
 #include <platform/drivers/idc.h>
 #include <rtos/task.h>
 #include <sof/trace/trace.h>
 #include <user/trace.h>
+#endif
 #include <stdint.h>
 #include <rtos/cache.h>
 

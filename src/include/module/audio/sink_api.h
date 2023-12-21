@@ -6,8 +6,9 @@
 
 #ifndef __MODULE_AUDIO_SINK_API_H__
 #define __MODULE_AUDIO_SINK_API_H__
-
+#ifndef MODULE_PRIVAT
 #include <errno.h>
+#endif
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>

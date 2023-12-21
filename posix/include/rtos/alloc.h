@@ -18,9 +18,10 @@
 
 #include <rtos/bit.h>
 #include <rtos/string.h>
+#ifndef MODULE_PRIVAT
 #include <sof/trace/trace.h>
 #include <user/trace.h>
-
+#endif
 #include <stddef.h>
 #include <stdint.h>
 

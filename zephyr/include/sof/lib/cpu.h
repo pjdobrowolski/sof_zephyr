@@ -19,9 +19,9 @@
 #if !defined(__ASSEMBLER__) && !defined(LINKER)
 
 #include <stdbool.h>
-
+#ifndef MODULE_PRIVAT
 #include <zephyr/arch/arch_inlines.h>
-
+#endif
 #if CONFIG_PM
 
 #include <zephyr/pm/pm.h>

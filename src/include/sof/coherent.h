@@ -11,7 +11,6 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-
 #include <rtos/spinlock.h>
 #include <sof/list.h>
 #include <sof/lib/memory.h>

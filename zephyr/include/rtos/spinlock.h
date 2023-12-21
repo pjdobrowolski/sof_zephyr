@@ -5,10 +5,10 @@
 
 #ifndef __ZEPHYR_RTOS_SPINLOCK_H__
 #define __ZEPHYR_RTOS_SPINLOCK_H__
-
+#ifndef MODULE_PRIVAT
 #include <zephyr/kernel.h>
 #include <zephyr/spinlock.h>
-
+#endif
 /* not implemented on Zephyr, but used within SOF */
 static inline void k_spinlock_init(struct k_spinlock *lock)
 {

@@ -15,7 +15,9 @@
 
 /* prioritize definitions in Zephyr SoC layer */
 #ifdef __ZEPHYR__
+#ifndef MODULE_PRIVAT
 #include <adsp_memory.h>
+#endif
 #endif
 
 struct sof;

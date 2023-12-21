@@ -31,9 +31,10 @@
 #define ALIGN_UP_INTERNAL(val, align) (((val) + (align) - 1) & ~((align) - 1))
 
 #if !defined(__ASSEMBLER__) && defined(__XTENSA__)
-
+#ifndef MODULE_PRIVAT
 #include <ipc/trace.h>
 #include <rtos/panic.h>
+#endif
 #define VERIFY_ALIGN
 
 #endif
