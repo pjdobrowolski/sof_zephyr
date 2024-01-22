@@ -382,7 +382,7 @@ static inline int trace_filter_update(const struct trace_filter *filter)
  * DECLARE_TR_CTX, tr_ctx and component UUID system below
  */
 #define _TRACE_INV_CLASS	TRACE_CLASS_DEPRECATED
-#endif //MODULE_PRIVAT
+
 /**
  * Trace context.
  */

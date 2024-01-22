@@ -23,11 +23,6 @@
 #include <sof/audio/source_api.h>
 
 #include "module_interface.h"
-#ifndef MODULE_PRIVAT
-#if CONFIG_INTEL_MODULES
-#include "modules.h"
-#endif
-#endif
 /*
  * helpers to determine processing type
  * Needed till all the modules use PROCESSING_MODE_SINK_SOURCE

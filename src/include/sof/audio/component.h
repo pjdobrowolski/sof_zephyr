@@ -35,7 +35,7 @@ struct sof_ipc_stream_posn;
 struct dai_hw_params;
 struct timestamp_data;
 struct dai_ts_data;
-
+#ifdef MODULE_PRIVAT
 /* types of component */
 enum sof_comp_type {
 	SOF_COMP_NONE = 0,
@@ -73,7 +73,7 @@ struct tr_ctx {
 	const struct sof_uuid_entry* uuid_p;	/**< UUID pointer, use SOF_UUID() to init */
 	uint32_t level;				/**< Default log level */
 };
-
+#endif
 /** \addtogroup component_api Component API
  *  @{
  */
