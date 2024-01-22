@@ -448,12 +448,16 @@ static void* entry_point(void* mod_cfg, void* parent_ppl, void** mod_ptr)
 	return &up_down_mixer_interface;
 }
 
+//"42F8060C-832F-4DBF-B247-51E961997B34"
 __attribute__((section(".module")))
 const struct sof_man_module_manifest udm_manifest = {
 	.module = {
 		.name = "UPDWMIX",
-		.uuid = {0x12, 0x34, 0xf1, 0xf1, 0x12, 0x34, 0x1a, 0x34,
-			 0x8c, 0x08, 0x88, 0x4b, 0xe5, 0xd1, 0x4f, 0xaa},
+		.uuid = {0x0c, 0x06, 0xf8, 0x42,
+				 0x2f, 0x83,
+				 0xbf, 0x4d,
+				 0xb2, 0x47,
+				 0x51, 0xe9, 0x61, 0x99, 0x7b, 0x34},
 		.entry_point = (uint32_t)entry_point,
 		.type = {.load_type = SOF_MAN_MOD_TYPE_MODULE,
 		.domain_ll = 1 },
