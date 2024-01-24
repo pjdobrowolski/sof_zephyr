@@ -25,7 +25,6 @@
 #define __SOF_IPC4_BASE_CONFIG_H__
 #ifndef __SOF_MODULE_SERVICE_BUILD__
 #include <sof/compiler_attributes.h>
-#endif
 #include <module/ipc4/base-config.h>
 
 struct sof_ipc_stream_params;
@@ -41,4 +40,5 @@ struct sof_sink;
 void ipc4_update_sink_format(struct sof_sink *sink,
 			     const struct ipc4_audio_format *fmt);
 
+#endif
 #endif
