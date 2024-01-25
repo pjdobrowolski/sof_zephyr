@@ -5,7 +5,7 @@
 // Author: Bartosz Kokoszko <bartoszx.kokoszko@intel.com>
 // Author: Adrian Bonislawski <adrian.bonislawski@intel.com>
 
-#include <sof/audio/module_adapter/module/generic.h>
+//#include <sof/audio/module_adapter/module/generic.h>
 #include <module/module/base.h>
 #include <module/module/api_ver.h>
 #include <rimage/sof/user/manifest.h>
