@@ -15,20 +15,6 @@ target_compile_definitions(up_down_mixer PRIVATE __ZEPHYR__=1
 												 MODULE_PRIVAT=1
 												 XCHAL_HAVE_HIFI3=1)
 
-target_include_directories(up_down_mixer PRIVATE "${SOF_SRC_DIR}/include"
-												 "${SOF_SRC_DIR}/include/coefficients"
-												 "${SOF_SRC_DIR}/include/ipc"
-												 "${SOF_SRC_DIR}/include/ipc4"
- 												 "${SOF_SRC_DIR}/include/math"
- 												 "${SOF_SRC_DIR}/include/lib"
-												 "${SOF_SRC_DIR}/include/sof/audio/module_adapter/iadk"
-												 "${SOF_SRC_DIR}/platform/library/include"
-# 												 "${SOF_SRC_DIR}/../zephyr/include"
-#  												 "${SOF_SRC_DIR}/../zephyr/include/zephyr/sys"
-#												 "${SOF_SRC_DIR}/../zephyr/lib/libc/minimal/include"
-												 "${LMDK_DIR_INCLUDE}"
-												 "${LMDK_DIR_INCLUDE}/sof")
-#												 "${SOF_SRC_DIR}/../xtos/include")
-#												 "${ZEPHYR_SRC_DIR}"
-#												 "${ZEPHYR_SRC_DIR}/../../../../include"
-#												 "${ZEPHYR_SRC_DIR}/../../../../include/zephyr")
+target_include_directories(up_down_mixer PRIVATE "${LMDK_DIR_INCLUDE}"
+												 "${LMDK_DIR_INCLUDE}/sof"
+												 "${LMDK_DIR_INCLUDE}/sof/audio")
