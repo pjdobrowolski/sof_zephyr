@@ -8,6 +8,19 @@
 #ifndef __ACE_VERSION_H__
 #define __ACE_VERSION_H__
 
-#define HW_CFG_VERSION		0
+#define ACE_VERSION_1_5 0x10500 /* MTL */
+#define ACE_VERSION_2_0 0x20000 /* LNL */
+#define ACE_VERSION_3_0 0x30000 /* PTL */
+
+/* ACE version defined by CONFIG_ACE_VER_*/
+#if CONFIG_ACE_VERSION_1_5
+#define ACE_VERSION ACE_VERSION_1_5
+#elif CONFIG_ACE_VERSION_2_0
+#define ACE_VERSION ACE_VERSION_2_0
+#elif CONFIG_ACE_VERSION_3_0
+#define ACE_VERSION ACE_VERSION_3_0
+#endif
+
+#define HW_CFG_VERSION		ACE_VERSION
 
 #endif /* __ACE_VERSION_H__ */
